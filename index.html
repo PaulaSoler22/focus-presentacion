@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CompanyGame FOCUS - Presentación Interactiva</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Open+Sans:wght@400;600&display=swap');
+
+        :root {
+            --primary: #1B7A8C;
+            --primary-dark: #125A68;
+            --primary-light: #4FA9BA;
+            --amber: #F4B942;
+            --accent-green: #4CAF6D;
+            --accent-teal: #00B4D8;
+            --accent-purple: #6C5CE7;
+            --accent-red: #E74C3C;
+            --dark: #2D2D2D;
+            --light: #F2FAFB;
+            --white: #ffffff;
+            --cg-blue: #14335C;
+            --shadow: 0 10px 40px rgba(0,0,0,0.15);
+            --shadow-hover: 0 20px 60px rgba(0,0,0,0.25);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .presentation-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+
+        .slide {
+            display: none;
+            animation: fadeIn 0.6s ease;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            overflow: hidden;
+            min-height: 85vh;
+        }
+
+        .slide.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .slide-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--amber) 100%);
+            color: var(--white);
+            padding: 40px 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.12);
+            border-radius: 50%;
+        }
+
+        .slide-header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.8em;
+            font-weight: 800;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-header h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.4em;
+            font-weight: 300;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-number {
+            position: absolute;
+            bottom: 20px;
+            right: 50px;
+            font-size: 5em;
+            font-weight: 800;
+            opacity: 0.18;
+            font-family: 'Montserrat', sans-serif;
+            z-index: 0;
+        }
+
+        .slide-content { padding: 40px 50px; }
+
+        /* ===== NAV ===== */
+        .nav-bar {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: var(--dark);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 -5px 30px rgba(0,0,0,0.3);
+        }
+        .nav-btn {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(27,122,140,0.5);
+        }
+        .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+        .slide-counter { color: var(--white); font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 1.1em; }
+
+        .progress-bar {
+            position: fixed; top: 0; left: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--amber), var(--accent-green));
+            transition: width 0.4s ease;
+            z-index: 1001;
+        }
+
+        /* ===== CARDS ===== */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        /* Cuatro tarjetas en una sola línea */
+        .card-grid.cols4 { grid-template-columns: repeat(4, 1fr); }
+        .card-grid.cols4 .card { padding: 24px 22px; }
+        .card-grid.cols4 .card h3 { font-size: 1.18em; }
+        @media (max-width: 1024px) { .card-grid.cols4 { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 560px) { .card-grid.cols4 { grid-template-columns: 1fr; } }
+        .card {
+            background: linear-gradient(145deg, #ffffff, #fff8f0);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.4s ease;
+            border-left: 5px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); }
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 100px; height: 100px;
+            background: linear-gradient(135deg, transparent 50%, rgba(27,122,140,0.06) 50%);
+            border-radius: 0 0 0 100%;
+        }
+        .card.bd-amber { border-left-color: var(--amber); }
+        .card.bd-green { border-left-color: var(--accent-green); }
+        .card.bd-teal { border-left-color: var(--accent-teal); }
+        .card.bd-purple { border-left-color: var(--accent-purple); }
+        .card.bd-red { border-left-color: var(--accent-red); }
+        .card-icon { font-size: 2.5em; margin-bottom: 15px; }
+        .card h3 { font-family: 'Montserrat', sans-serif; font-size: 1.3em; color: var(--dark); margin-bottom: 12px; }
+        .card p { color: #666; line-height: 1.7; font-size: 0.95em; }
+        .card p strong { color: var(--dark); }
+
+        /* ===== TABLE ===== */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .data-table thead { background: linear-gradient(135deg, var(--primary), var(--amber)); color: var(--white); }
+        .data-table th { padding: 16px 20px; text-align: left; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.9em; text-transform: uppercase; letter-spacing: 0.5px; }
+        .data-table td { padding: 14px 20px; border-bottom: 1px solid #f0e6da; font-size: 0.95em; }
+        .data-table tbody tr:hover { background: #fff3e6; }
+        .data-table tbody tr:nth-child(even) { background: #fffaf5; }
+
+        /* ===== ACCORDION (FAQ) ===== */
+        .accordion { margin-top: 25px; }
+        .accordion-item { margin-bottom: 12px; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+        .accordion-header {
+            background: linear-gradient(135deg, #fff8f0, #ffffff);
+            padding: 18px 25px; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+            font-family: 'Montserrat', sans-serif; font-weight: 600; color: var(--dark);
+            transition: all 0.3s ease; border-left: 4px solid var(--primary-light);
+        }
+        .accordion-header:hover { background: linear-gradient(135deg, #ffeed9, #fff8f0); border-left-color: var(--primary); }
+        .accordion-header .icon { font-size: 1.3em; transition: transform 0.3s ease; color: var(--primary); }
+        .accordion-item.active .accordion-header .icon { transform: rotate(180deg); }
+        .accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; background: var(--white); }
+        .accordion-item.active .accordion-body { max-height: 500px; }
+        .accordion-content { padding: 20px 25px; color: #555; line-height: 1.8; }
+        .accordion-content strong { color: var(--primary-dark); }
+
+        /* ===== VALUE CHAIN ===== */
+        .value-chain { display: flex; justify-content: space-between; align-items: center; margin: 40px 0; flex-wrap: wrap; gap: 15px; }
+        .chain-box {
+            flex: 1; min-width: 150px;
+            background: linear-gradient(135deg, var(--primary), var(--amber));
+            color: var(--white); padding: 25px 20px; border-radius: 14px; text-align: center;
+            font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.95em;
+            transition: all 0.3s ease;
+        }
+        .chain-box.cb-amber { background: linear-gradient(135deg, var(--amber), #E6920A); }
+        .chain-box.cb-green { background: linear-gradient(135deg, var(--accent-green), #5FA130); }
+        .chain-box.cb-teal { background: linear-gradient(135deg, var(--accent-teal), #0090AD); }
+        .chain-box:hover { transform: scale(1.05); box-shadow: 0 10px 30px rgba(245,130,32,0.3); }
+        .chain-box .cb-emoji { font-size: 1.8em; display: block; margin-bottom: 8px; }
+        .chain-arrow { font-size: 2em; color: var(--primary); animation: float 2s ease infinite; }
+
+        /* ===== PERCENTAGE BARS / FACTORS ===== */
+        .factor-block { margin: 22px 0; }
+        .factor-block .pct-label { display: flex; justify-content: space-between; margin-bottom: 8px; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1.05em; color: var(--dark); }
+        .factor-block .pct-label .pct-num { color: var(--primary-dark); }
+        .percentage-track { height: 26px; background: #f0e6da; border-radius: 13px; overflow: hidden; position: relative; }
+        .percentage-fill {
+            height: 100%; border-radius: 13px;
+            display: flex; align-items: center; justify-content: flex-end; padding-right: 12px;
+            color: var(--white); font-weight: 700; font-size: 0.85em;
+            transition: width 1.4s ease; width: 0;
+        }
+        .slide.active .percentage-fill { width: var(--target-width); }
+        .factor-block .pct-desc { color: #666; font-size: 0.92em; line-height: 1.6; margin-top: 8px; }
+        .fill-orange { background: linear-gradient(90deg, #FBA94C, #E06D10); }
+        .fill-amber  { background: linear-gradient(90deg, #FBC02D, #E6920A); }
+        .fill-green  { background: linear-gradient(90deg, #9BD15F, #5FA130); }
+        .fill-teal   { background: linear-gradient(90deg, #33C7E8, #0090AD); }
+        .fill-purple { background: linear-gradient(90deg, #B57BCC, #7D3C98); }
+        .fill-red    { background: linear-gradient(90deg, #EC7063, #C0392B); }
+        .fill-blue   { background: linear-gradient(90deg, #2E86C1, #1A5276); }
+
+        /* ===== BADGES ===== */
+        .badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 0.8em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin: 3px; }
+        .badge-orange { background: #FDEBD0; color: #B35900; }
+        .badge-green { background: #E8F8D8; color: #4A8C1C; }
+        .badge-teal { background: #D4F1F9; color: #0077A3; }
+        .badge-amber { background: #FEF3CD; color: #B7860B; }
+        .badge-purple { background: #F0E2F6; color: #7D3C98; }
+
+        /* ===== TWO COLUMN ===== */
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 30px; }
+
+        /* ===== HERO (PORTADA) ===== */
+        .hero {
+            text-align: center; padding: 70px 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--amber) 55%, #FFE29A 100%);
+            color: var(--white); position: relative; overflow: hidden;
+        }
+        .hero .hero-logo { font-size: 4.5em; margin-bottom: 10px; animation: float 3s ease infinite; }
+        .hero h1 { font-family: 'Montserrat', sans-serif; font-size: 3.5em; font-weight: 800; margin-bottom: 15px; text-shadow: 2px 2px 4px rgba(0,0,0,0.15); }
+        .hero .subtitle { font-size: 1.3em; opacity: 0.95; margin-bottom: 22px; }
+        .hero .hero-context { max-width: 760px; margin: 0 auto 26px; font-size: 1.02em; line-height: 1.7; opacity: 0.95; }
+        .hero-badges { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
+        .hero-badge { background: rgba(255,255,255,0.22); backdrop-filter: blur(10px); padding: 10px 25px; border-radius: 30px; font-weight: 600; font-size: 0.9em; }
+        .hero-brand { margin-top: 40px; display: flex; gap: 22px; align-items: center; justify-content: center; flex-wrap: wrap; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.9em; opacity: 0.95; }
+        .hero-brand .cg { letter-spacing: 3px; font-weight: 800; }
+
+        /* ===== SEGMENT ROWS ===== */
+        .seg-row { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 12px; margin-bottom: 10px; }
+        .seg-row .seg-emoji { font-size: 1.7em; }
+        .seg-row strong { font-family: 'Montserrat', sans-serif; color: var(--dark); }
+        .seg-row small { color: #777; }
+
+        /* ===== FACTOR ACCORDION ===== */
+        .factor-accordion { margin: 25px 0; }
+        .factor-item { margin-bottom: 15px; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); transition: all 0.3s ease; }
+        .factor-item:hover { box-shadow: 0 6px 25px rgba(0,0,0,0.12); }
+        .factor-header { padding: 20px 25px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1.1em; color: var(--white); transition: all 0.3s ease; }
+        .factor-header .factor-tag { background: rgba(255,255,255,0.28); padding: 6px 16px; border-radius: 20px; font-size: 0.85em; font-weight: 800; }
+        .factor-header .factor-icon { font-size: 1.3em; transition: transform 0.3s ease; }
+        .factor-item.active .factor-header .factor-icon { transform: rotate(180deg); }
+        .factor-orange { background: linear-gradient(135deg, #F58220, #E06D10); }
+        .factor-amber  { background: linear-gradient(135deg, #F9A825, #E6920A); }
+        .factor-green  { background: linear-gradient(135deg, #7BC143, #5FA130); }
+        .factor-teal   { background: linear-gradient(135deg, #00B4D8, #0090AD); }
+        .factor-body { max-height: 0; overflow: hidden; transition: max-height 0.5s ease; background: var(--white); }
+        .factor-item.active .factor-body { max-height: 400px; }
+        .factor-content { padding: 22px 25px; color: #555; line-height: 1.8; }
+        .factor-content strong { color: var(--dark); }
+
+        /* ===== MÉTODOS / TIMELINE DE IMPLEMENTACIÓN ===== */
+        .method { border-radius: 18px; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.12); margin-bottom: 34px; }
+        .method.m-orange { --m1:#F58220; --m2:#E06D10; --msoft:rgba(245,130,32,0.07); }
+        .method.m-green  { --m1:#7BC143; --m2:#5FA130; --msoft:rgba(123,193,67,0.10); }
+        .method.m-teal   { --m1:#00B4D8; --m2:#0090AD; --msoft:rgba(0,180,216,0.09); }
+        .method.m-purple { --m1:#9B59B6; --m2:#7D3C98; --msoft:rgba(155,89,182,0.08); }
+        .method-head { background: linear-gradient(135deg, var(--m1), var(--m2)); color:#fff; padding: 24px 34px; }
+        .method-head h3 { font-family:'Montserrat'; font-size:1.55em; font-weight:800; display:flex; align-items:center; gap:12px; margin-bottom:4px; }
+        .method-head .method-quote { font-style:italic; opacity:0.93; font-size:1em; }
+        .method-body { background:#f7f8fb; padding: 28px 34px 34px; }
+        .tl-title { text-align:center; font-family:'Montserrat'; font-weight:800; font-size:1.5em; color:var(--m2); margin-bottom:6px; }
+        .tl-sub { text-align:center; font-style:italic; color:#666; margin-bottom:6px; }
+
+        .tl { position:relative; padding: 58px 8px 52px; }
+        .tl-track { display:flex; align-items:center; justify-content:space-between; position:relative; }
+        .tl-track::before { content:''; position:absolute; left:1.5%; right:1.5%; top:50%; height:4px; transform:translateY(-50%); border-radius:2px; z-index:0; background: linear-gradient(90deg, var(--m1), var(--m2)); }
+        .tl-node { position:relative; z-index:1; display:flex; align-items:center; justify-content:center; }
+        .tl-week { width:24px; height:24px; border-radius:50%; background:#fff; border:4px solid var(--m2); box-shadow:0 2px 6px rgba(0,0,0,0.12); }
+        .tl-act { width:50px; height:50px; border-radius:50%; background: linear-gradient(135deg, var(--m1), var(--m2)); color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.3em; box-shadow:0 4px 14px rgba(0,0,0,0.22); }
+        .tl-label { position:absolute; left:50%; transform:translateX(-50%); width:100px; text-align:center; font-family:'Montserrat'; font-weight:700; font-size:0.66em; text-transform:uppercase; letter-spacing:0.5px; line-height:1.25; color:#54606e; }
+        .tl-label.below { top: calc(100% + 10px); }
+        .tl-label.above { bottom: calc(100% + 10px); }
+        .tl-label.wk { color:#7a8694; font-weight:600; }
+
+        .alt-sub { font-family:'Montserrat'; font-weight:800; color:var(--m2); margin: 22px 0 2px; display:flex; align-items:center; gap:8px; font-size:1.05em; }
+        .tl-auto { border:2px solid var(--m2); border-radius:14px; background:var(--msoft); padding:16px 24px; display:flex; align-items:center; gap:26px; margin-top:6px; }
+        .tl-auto-lbl { font-family:'Montserrat'; font-weight:800; color:var(--m2); font-size:1.05em; line-height:1.2; white-space:nowrap; }
+        .tl-auto-pins { display:flex; justify-content:space-around; flex:1; gap:10px; flex-wrap:wrap; }
+        .tl-auto-pin { display:flex; flex-direction:column; align-items:center; gap:8px; }
+        .tl-auto-pin .pin-lbl { font-family:'Montserrat'; font-weight:700; font-size:0.6em; text-transform:uppercase; letter-spacing:0.5px; color:var(--m2); text-align:center; line-height:1.2; }
+        .tl-auto-pin .pin-c { width:42px; height:42px; border-radius:50%; background: linear-gradient(135deg, var(--m1), var(--m2)); color:#fff; display:flex; align-items:center; justify-content:center; font-size:1em; box-shadow:0 3px 10px rgba(0,0,0,0.18); }
+        @media (max-width: 768px) {
+            .tl-auto { flex-direction:column; gap:14px; }
+            .tl-label { font-size:0.55em; width:74px; }
+        }
+
+        /* ===== CARACTERÍSTICAS DE MÉTODO ===== */
+        .features { background:#fff; border:2px solid var(--m2); border-radius:14px; padding:22px 26px; margin-top:24px; }
+        .features h4 { font-family:'Montserrat'; font-weight:800; color:var(--m2); font-size:1.15em; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+        .features ul { list-style:none; padding:0; }
+        .features li { position:relative; padding:7px 0 7px 28px; color:#444; line-height:1.5; }
+        .features li::before { content:'✓'; position:absolute; left:2px; color:var(--m2); font-weight:800; }
+        .features .ideal { margin-top:14px; background:var(--msoft); border-radius:10px; padding:12px 16px; color:#445; line-height:1.5; }
+        .features .ideal strong { color:var(--m2); }
+
+        /* ===== FACTOR COLORS / CONTENT (Valor de la Compañía) ===== */
+        .factor-purple { background: linear-gradient(135deg, #9B59B6, #7D3C98); }
+        .factor-red    { background: linear-gradient(135deg, #EC7063, #C0392B); }
+        .factor-blue   { background: linear-gradient(135deg, #2E86C1, #1A5276); }
+        .factor-item.active .factor-body { max-height: 680px; }
+        .factor-content p { margin-bottom: 10px; }
+        .factor-content p:last-child { margin-bottom: 0; }
+        .factor-consejo { background:#fff8f0; border-left:4px solid var(--amber); border-radius:8px; padding:12px 16px; margin-top:6px; color:#555; line-height:1.6; }
+        .factor-consejo strong { color: var(--primary-dark); }
+
+        /* ===== CUADRO DE MANDO (tarjetas de informe) ===== */
+        .cm-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:24px; margin-top:26px; }
+        @media (max-width: 1024px) { .cm-grid { grid-template-columns: repeat(2, 1fr); } }
+        /* Masonry por columnas: empaqueta tarjetas de distinta altura sin huecos (recomendado para el Cuadro de Mando) */
+        .cm-masonry { column-count:3; column-gap:24px; margin-top:26px; }
+        .cm-masonry .cm-card { display:inline-block; width:100%; margin:0 0 24px; break-inside:avoid; -webkit-column-break-inside:avoid; }
+        @media (max-width:1024px){ .cm-masonry { column-count:2; } }
+        @media (max-width:560px){ .cm-masonry { column-count:1; } }
+        .cm-card { background:#fff; border-radius:16px; box-shadow:0 4px 20px rgba(0,0,0,0.1); border:1px solid #eee; overflow:hidden; display:flex; flex-direction:column; transition: box-shadow .3s, transform .3s; }
+        .cm-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-4px); }
+        .cm-card .cm-img { padding:14px 14px 0; }
+        .cm-card .cm-img img { width:100%; border-radius:8px; border:1px solid #e6e6e6; cursor:zoom-in; display:block; transition: transform .3s ease; }
+        .cm-card .cm-img img:hover { transform: scale(1.01); }
+        .cm-card .cm-body { padding:16px 22px 22px; display:flex; flex-direction:column; flex:1; }
+        .cm-titlerow { display:flex; align-items:center; gap:10px; }
+        .cm-titlerow h3 { font-family:'Montserrat'; font-size:1.18em; color:var(--dark); display:flex; align-items:center; gap:8px; }
+        .cm-badge { margin-left:auto; background:#FDEBD0; color:#B35900; font-family:'Montserrat'; font-weight:700; font-size:0.66em; text-transform:uppercase; letter-spacing:0.5px; padding:5px 12px; border-radius:20px; white-space:nowrap; }
+        .cm-desc { color:#666; line-height:1.6; font-size:0.9em; margin:10px 0 14px; border-bottom:1px dashed #e2e8ee; padding-bottom:14px; }
+        .cm-why-label { align-self:flex-start; display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg,var(--primary),var(--amber)); color:#fff; font-family:'Montserrat'; font-weight:700; font-size:0.7em; text-transform:uppercase; letter-spacing:0.5px; padding:8px 16px; border-radius:20px; box-shadow:0 3px 10px rgba(27,122,140,0.3); }
+        .cm-why-text { background:#fff8f0; border-radius:10px; padding:12px 16px; margin-top:10px; color:#555; line-height:1.6; font-size:0.88em; }
+        .cm-why-text strong { color:var(--primary-dark); }
+        @media (max-width: 768px) { .cm-grid { grid-template-columns: 1fr; } }
+
+        /* ===== DECISIONES (bloques numerados) ===== */
+        .dec-block { border-radius:16px; overflow:hidden; box-shadow:0 6px 24px rgba(0,0,0,0.1); margin-bottom:26px; border:1px solid #eee; }
+        .dec-head { display:flex; align-items:center; gap:18px; padding:20px 28px; background:linear-gradient(135deg, var(--primary), var(--amber)); color:#fff; }
+        .dec-num { flex-shrink:0; width:46px; height:46px; border-radius:12px; background:rgba(255,255,255,0.25); display:flex; align-items:center; justify-content:center; font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.4em; }
+        .dec-head h3 { font-family:'Montserrat',sans-serif; font-size:1.3em; margin-bottom:3px; }
+        .dec-head p { font-size:0.92em; opacity:0.95; line-height:1.45; }
+        .dec-shot { padding:22px 26px 26px; background:#f7f9fb; text-align:center; }
+        .dec-shot img { width:100%; max-width:920px; border-radius:10px; border:1px solid #e0e6ea; box-shadow:0 4px 16px rgba(0,0,0,0.1); cursor:zoom-in; transition:transform .3s ease; }
+        .dec-shot img:hover { transform:scale(1.01); }
+
+        /* ===== PLANIFICACIÓN (recorrido por pasos) ===== */
+        .phase-intro { display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:22px; color:#555; line-height:1.6; }
+        .phase-intro .badge { margin:0; }
+        .plan-steps { position:relative; display:grid; grid-template-columns:repeat(var(--steps,9),1fr); gap:8px; margin-bottom:24px; }
+        .plan-steps::before { content:''; position:absolute; top:23px; left:calc(50% / var(--steps,9)); right:calc(50% / var(--steps,9)); height:3px; background:#e2e8ee; z-index:0; }
+        .plan-step { position:relative; z-index:1; background:none; border:none; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px; font-family:'Montserrat',sans-serif; color:#777; padding:0; }
+        .plan-step .ps-num { width:46px; height:46px; border-radius:50%; background:#fff; border:3px solid #e2e8ee; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.05em; transition:all .25s ease; }
+        .plan-step .ps-label { font-size:0.74em; font-weight:700; text-align:center; line-height:1.25; }
+        .plan-step:hover .ps-num { border-color:var(--primary-light); color:var(--primary); }
+        .plan-step.active .ps-num { background:linear-gradient(135deg,var(--primary),var(--amber)); border-color:transparent; color:#fff; box-shadow:0 4px 14px rgba(0,0,0,0.18); transform:scale(1.08); }
+        .plan-step.active .ps-label { color:var(--primary-dark); }
+        .plan-panel { display:none; animation: planIn .35s ease; }
+        @keyframes planIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+        .plan-panel.active { display:block; }
+        .plan-tabs { display:flex; flex-wrap:wrap; gap:8px; padding:16px 26px 0; background:#f7f9fb; align-items:center; }
+        .plan-tabs-label { font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.72em; text-transform:uppercase; letter-spacing:0.5px; color:var(--primary-dark); margin-right:4px; }
+        .plan-tab { background:#fff; border:1px solid #dfe5ea; border-radius:20px; padding:5px 13px; font-size:0.8em; color:#555; }
+        .plan-panel .dec-shot img, .dec-shot.narrow img { display:block; width:100%; max-width:620px; margin:0 auto; }
+        .plan-groups { display:grid; grid-template-columns:repeat(var(--steps,9),1fr); gap:8px; margin-bottom:12px; }
+        .plan-groups span { text-align:center; font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.7em; text-transform:uppercase; letter-spacing:0.5px; color:var(--primary-dark); background:var(--primary-soft,#e8f3f5); border-radius:20px; padding:6px 10px; }
+        .plan-why { padding:16px 26px 0; background:#f7f9fb; }
+        .plan-why .cm-why-text { margin-top:8px; }
+        @media (max-width: 900px) {
+            .plan-steps { grid-template-columns:repeat(5,1fr); row-gap:16px; }
+            .plan-steps::before { display:none; }
+            .plan-groups { display:none; }
+        }
+
+        /* ===== GALLERY + LIGHTBOX ===== */
+        .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px; margin-top: 28px; }
+        .shot {
+            border-radius: 14px; overflow: hidden; background: #fff;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1); border: 1px solid #eee;
+            cursor: zoom-in; transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .shot:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); }
+        .shot img { width: 100%; height: auto; display: block; background: #fff; }
+        .shot figcaption {
+            padding: 14px 18px; font-family: 'Montserrat', sans-serif; font-weight: 600;
+            color: var(--dark); font-size: 0.95em;
+            border-top: 3px solid var(--primary); background: #fff8f0;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .shot figcaption .zoom-hint { margin-left: auto; font-size: 0.78em; color: var(--primary); font-weight: 700; }
+
+        .lightbox {
+            position: fixed; inset: 0; background: rgba(20,12,4,0.92);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 3000; padding: 30px; opacity: 0; visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease; cursor: zoom-out;
+        }
+        .lightbox.active { opacity: 1; visibility: visible; }
+        .lightbox img { max-width: 96%; max-height: 86vh; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); transform: scale(0.96); transition: transform 0.3s ease; }
+        .lightbox.active img { transform: scale(1); }
+        .lightbox-caption { color: #fff; font-family: 'Montserrat', sans-serif; font-weight: 600; margin-top: 18px; font-size: 1.05em; text-align: center; }
+        .lightbox-close { position: fixed; top: 22px; right: 32px; color: #fff; font-size: 2.4em; cursor: pointer; opacity: 0.8; transition: all 0.2s ease; line-height: 1; }
+        .lightbox-close:hover { opacity: 1; transform: scale(1.15); }
+
+        /* ===== CARTELERA (estilo BusinessGlobal) ===== */
+        .cartelera-container { text-align: center; margin: 30px 0; }
+        .cartelera-img { max-width: 100%; height: auto; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); transition: transform 0.3s ease; cursor: zoom-in; }
+        .cartelera-img:hover { transform: scale(1.02); }
+        .cartelera-caption { margin-top: 15px; font-style: italic; color: #666; font-size: 0.95em; }
+
+        /* ===== RESERVED AVATAR BOX ===== */
+        .reserved {
+            margin: 30px auto 0; max-width: 760px; border: 2px dashed var(--primary-light); border-radius: 16px;
+            background: #fff8f0; padding: 30px; text-align: center; color: #8a6a45;
+        }
+        .reserved h3 { font-family: 'Montserrat', sans-serif; color: var(--primary-dark); margin-bottom: 8px; }
+        .reserved code { background: #ffe6cc; padding: 2px 8px; border-radius: 6px; color: var(--primary-dark); font-size: 0.9em; }
+
+        /* ===== INGRESO / PHONE ===== */
+        .plataforma-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; margin-top: 20px; }
+        .plataforma-steps { list-style: none; padding: 0; margin-top: 10px; }
+        .plataforma-steps li { display: flex; gap: 16px; align-items: flex-start; padding: 16px 0; border-bottom: 1px solid #f0e6da; font-size: 1.05em; color: #444; line-height: 1.5; }
+        .plataforma-steps li:last-child { border-bottom: none; }
+        .plataforma-steps .step-num { flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--amber)); color: #fff; display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; font-weight: 700; }
+        .plataforma-steps strong { color: var(--primary-dark); }
+        .ingreso-title { font-family:'Montserrat',sans-serif; font-weight:800; font-size:2em; color:var(--primary); line-height:1.1; margin-bottom:6px; }
+        .ingreso-title::after { content:''; display:block; width:120px; height:5px; background:var(--primary); border-radius:3px; margin-top:14px; }
+        .ingreso-list { list-style:none; padding:0; margin-top:28px; counter-reset: ing; }
+        .ingreso-list li { counter-increment: ing; position:relative; padding:14px 0 14px 42px; font-size:1.15em; color:#444; line-height:1.45; border-bottom:1px solid #f0e6da; }
+        .ingreso-list li:last-child { border-bottom:none; }
+        .ingreso-list li::before { content: counter(ing) "."; position:absolute; left:2px; top:14px; font-family:'Montserrat',sans-serif; font-weight:800; color:var(--primary); font-size:1.05em; }
+        .ingreso-list a { color:var(--primary-dark); font-weight:700; text-decoration:none; word-break:break-all; }
+        .ingreso-list a:hover { text-decoration:underline; }
+        .phone-logo small.tagline { letter-spacing:2px; color:#9aa; font-size:0.4em; }
+        .phone-mock { width: 290px; max-width: 100%; margin: 0 auto; background: #1a1a1a; border-radius: 42px; padding: 14px; box-shadow: 0 25px 60px rgba(0,0,0,0.35); animation: float 4s ease infinite; }
+        .phone-screen { background: #fff; border-radius: 30px; overflow: hidden; padding: 8px 26px 38px; position: relative; }
+        .phone-notch { width: 130px; height: 24px; background: #1a1a1a; border-radius: 0 0 16px 16px; margin: 0 auto 28px; }
+        .phone-logo { text-align: center; font-family: 'Montserrat', sans-serif; font-weight: 800; color: var(--primary); letter-spacing: 2px; font-size: 1.15em; }
+        .phone-logo small { display: block; font-size: 0.42em; letter-spacing: 3px; color: #b0b0b0; font-weight: 600; margin-top: 2px; }
+        .phone-title { text-align: center; font-size: 0.95em; color: #444; margin: 22px 0; font-weight: 600; border-top: 1px solid #eee; padding-top: 22px; }
+        .phone-field { background: #f4f4f4; border-radius: 8px; padding: 13px 14px; font-size: 0.8em; color: #9a9a9a; margin-bottom: 15px; }
+        .phone-btn { background: var(--primary); color: #fff; text-align: center; padding: 13px; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-weight: 700; letter-spacing: 1px; font-size: 0.85em; margin-top: 6px; }
+        .phone-recover { text-align: center; font-size: 0.72em; color: var(--primary); margin-top: 18px; }
+
+        /* ===== CLOSING ===== */
+        .closing { text-align: center; padding: 70px 40px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: #fff; min-height: 85vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .closing .closing-emoji { font-size: 3.4em; margin-bottom: 16px; }
+        .closing h1 { font-family: 'Montserrat', sans-serif; font-size: 3.4em; color: #fff; margin-bottom: 14px; }
+        .closing p { color: rgba(255,255,255,0.92); font-size: 1.15em; max-width: 640px; margin: 0 auto 12px; line-height: 1.7; }
+        .closing .thanks-sub { font-size: 1.3em; opacity: 0.92; margin-bottom: 38px; }
+        .contact-box { display:inline-block; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.28); border-radius:16px; padding:24px 46px; margin: 4px auto 44px; backdrop-filter: blur(6px); }
+        .contact-line { font-size:1.12em; margin:9px 0; display:flex; align-items:center; gap:10px; justify-content:center; }
+        .contact-line a { color:#fff; text-decoration:none; }
+        .contact-line a:hover { text-decoration:underline; }
+        .sdn-logo { display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:30px; }
+        .sdn-mark { width:48px; height:48px; border-radius:50%; border:3px solid #fff; display:flex; align-items:center; justify-content:center; font-size:1.5em; }
+        .sdn-text { text-align:left; line-height:1.08; }
+        .sdn-main { font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.5em; letter-spacing:3px; display:block; }
+        .sdn-sub { font-family:'Montserrat',sans-serif; font-weight:500; letter-spacing:6px; font-size:0.72em; display:block; opacity:0.95; }
+        .sdn-col { font-size:0.62em; letter-spacing:3px; display:block; opacity:0.9; text-transform:uppercase; }
+        .sdn-img-box { display:inline-block; margin-bottom:30px; }
+        .sdn-img { width:300px; max-width:80%; height:auto; display:block; margin:0 auto; }
+        .contact-line .wa-icon { width:22px; height:22px; fill:#fff; flex-shrink:0; }
+        .brand-pill { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,0.2); backdrop-filter:blur(8px); padding:11px 24px; border-radius:30px; font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.95em; }
+        .social-row { display:flex; gap:16px; justify-content:center; margin:2px auto 32px; position:relative; z-index:1; }
+        .social-icon { width:46px; height:46px; border-radius:50%; background:rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.32); display:flex; align-items:center; justify-content:center; transition:transform 0.2s ease, background 0.2s ease; }
+        .social-icon:hover { background:rgba(255,255,255,0.32); transform:translateY(-3px); }
+        .social-icon svg { width:22px; height:22px; fill:#fff; }
+
+        /* ===== SECTION DIVIDER (slides separadoras) ===== */
+        .section-divider {
+            min-height: 85vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 60px 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--amber) 60%, #FFE29A 100%);
+            color: var(--white); position: relative; overflow: hidden;
+        }
+        .section-divider::before {
+            content: ''; position: absolute; top: -20%; left: -10%; width: 480px; height: 480px;
+            background: rgba(255,255,255,0.08); border-radius: 50%;
+        }
+        .section-divider::after {
+            content: ''; position: absolute; bottom: -25%; right: -10%; width: 380px; height: 380px;
+            background: rgba(255,255,255,0.08); border-radius: 50%;
+        }
+        .section-divider .sd-icon { font-size: 4.5em; margin-bottom: 18px; position: relative; z-index: 1; animation: float 3s ease infinite; }
+        .section-divider .sd-eyebrow { font-family: 'Montserrat', sans-serif; font-weight: 700; letter-spacing: 5px; font-size: 0.95em; opacity: 0.85; margin-bottom: 14px; position: relative; z-index: 1; text-transform: uppercase; }
+        .section-divider h1 { font-family: 'Montserrat', sans-serif; font-size: 3.4em; font-weight: 800; margin-bottom: 18px; position: relative; z-index: 1; text-shadow: 2px 2px 4px rgba(0,0,0,0.15); }
+        .section-divider p { font-size: 1.2em; opacity: 0.95; max-width: 680px; margin: 0 auto; line-height: 1.6; position: relative; z-index: 1; }
+        .section-divider .sd-rule { width: 90px; height: 4px; background: rgba(255,255,255,0.7); border-radius: 2px; margin: 26px auto 0; position: relative; z-index: 1; }
+        @media (max-width: 768px) { .section-divider h1 { font-size: 2.1em; } }
+
+        /* ===== INTRO OVERLAY ===== */
+        .intro-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 2000; transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+        .intro-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .intro-overlay .intro-logo { margin-bottom: 16px; animation: float 3s ease infinite; }
+        .cover-photo { width: 440px; max-width: 84%; height: auto; display: block; margin: 0 auto; border-radius: 18px; border: 4px solid rgba(255,255,255,0.9); box-shadow: 0 16px 40px rgba(0,0,0,0.30); }
+        .hero .hero-logo .cover-photo { width: 380px; }
+        .intro-overlay h1 { font-family: 'Montserrat', sans-serif; font-size: 4em; color: var(--white); font-weight: 800; margin-bottom: 14px; text-align: center; }
+        .intro-overlay p { color: rgba(255,255,255,0.85); font-size: 1.3em; margin-bottom: 40px; text-align: center; padding: 0 20px; }
+        .start-btn {
+            background: var(--white); color: var(--primary-dark); border: none;
+            padding: 18px 50px; border-radius: 40px;
+            font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1.2em;
+            cursor: pointer; transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .start-btn:hover { transform: scale(1.05); box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #fff3e6; }
+        ::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        @media (max-width: 768px) {
+            .two-col, .plataforma-cols { grid-template-columns: 1fr; }
+            .slide-header h1 { font-size: 1.8em; }
+            .hero h1 { font-size: 2.2em; }
+            .value-chain { flex-direction: column; }
+            .chain-arrow { transform: rotate(90deg); }
+            .slide-content { padding: 30px 25px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===================== INTRO OVERLAY ===================== -->
+<!-- IMG_PORTADA: guarda en assets/ una imagen alusiva al simulador (p.ej. assets/portada.png)
+     y reemplaza el src de abajo. Mientras no exista, se ve el texto sobre el fondo teal. -->
+<div class="intro-overlay" id="introOverlay">
+    <div class="intro-logo">
+<img class="cover-photo" src="assets/portada.png" alt="FOCUS" onerror="this.style.display='none'">
+    </div>
+    <h1>FOCUS</h1>
+    <p>Diseño y Gestión Estratégica con Enfoque al Cliente</p>
+    <button class="start-btn" onclick="startPresentation()">▶ INICIAR PRESENTACIÓN</button>
+</div>
+
+<div class="progress-bar" id="progressBar" style="width: 0%"></div>
+
+<div class="presentation-container">
+
+    <!-- ===================== SLIDE 1: PORTADA + CONTEXTO ===================== -->
+    <div class="slide active" id="slide1">
+        <div class="hero">
+            <div class="hero-logo">
+<img class="cover-photo" src="assets/portada.png" alt="FOCUS" onerror="this.style.display='none'">
+            </div>
+            <h1>FOCUS</h1>
+            <p class="subtitle">Diseño y Gestión Estratégica con Enfoque al Cliente</p>
+            <p class="hero-context">
+                En FOCUS tu equipo diseña y pone en marcha un nuevo centro deportivo: define su propuesta de valor, elige ubicación e instalaciones, arma el portafolio de actividades y servicios, y construye su marca. Después de planificar, competirás durante 3 periodos en un mercado real junto a otros gimnasios, ajustando precios, promoción y servicio para hacer crecer el Valor de tu Compañía.
+            </p>
+            <div class="hero-badges">
+                <span class="hero-badge">🎯 Nivel 6-7 · Estratégico</span>
+                <span class="hero-badge">🏆 Competitivo</span>
+                <span class="hero-badge">⏱️ 24-48 horas</span>
+                <span class="hero-badge">🏋️ Centro Deportivo</span>
+            </div>
+            <div class="hero-brand">
+                <span class="cg">C O M P A N Y G A M E</span>
+                <span>•</span>
+                <span>Simuladores de Negocios Colombia</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== SLIDE 2: CARTELERA + AVATARES ===================== -->
+    <div class="slide" id="slide2">
+        <div class="slide-header">
+            <h1>🎮 Cartelera de Simuladores</h1>
+            <h2>El portafolio CompanyGame y sus avatares de IA</h2>
+            <div class="slide-number">01</div>
+        </div>
+        <div class="slide-content">
+            <p style="color:#555;line-height:1.7;">CompanyGame ofrece una amplia gama de simuladores de negocio organizados por nivel de dificultad y área de conocimiento. <strong style="color:var(--primary-dark);">FOCUS</strong> se ubica en el área de <strong>Marketing de Servicios y Experiencia de Cliente</strong>.</p>
+
+            <div class="cartelera-container">
+                <img class="cartelera-img" src="assets/cartelera.jpg" alt="Cartelera de simuladores CompanyGame" loading="lazy" onclick="openLightbox('assets/cartelera.jpg','Cartelera completa de simuladores CompanyGame — Niveles 1 a 7 por área de negocio')">
+                <div class="cartelera-caption">Cartelera completa de simuladores CompanyGame — Niveles 1 a 7 por área de negocio</div>
+            </div>
+
+            <div class="cartelera-container" id="avatares-container">
+                <img class="cartelera-img" src="assets/avatares.png" alt="Avatares de IA de los simuladores CompanyGame" loading="lazy"
+                     onclick="openLightbox('assets/avatares.png','Avatares de IA implementados en los simuladores CompanyGame')"
+                     onerror="this.closest('#avatares-container').style.display='none'; var p=document.getElementById('avatares-pending'); if(p) p.style.display='block';">
+                <div class="cartelera-caption">Avatares de IA implementados en los simuladores CompanyGame</div>
+            </div>
+
+            <div class="reserved" id="avatares-pending" style="display:none;">
+                <h3>🤖 Avatares de IA — pendiente de archivo</h3>
+                <p>Guarda la imagen de avatares como <code>assets/avatares.png</code> en la carpeta del proyecto y aparecerá aquí automáticamente, con el mismo estilo que la cartelera.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== SLIDE 3: INGRESO A LA PLATAFORMA ===================== -->
+    <div class="slide" id="slide3">
+        <div class="slide-header">
+            <h1>🙌 Ingreso a la Plataforma</h1>
+            <h2>Así accedes para empezar a competir</h2>
+            <div class="slide-number">02</div>
+        </div>
+        <div class="slide-content">
+            <div class="plataforma-cols">
+                <div>
+                    <ol class="ingreso-list">
+                        <li><a href="https://plataforma.companygame.net/">https://plataforma.companygame.net/</a></li>
+                        <li>Usuario y código personal (contraseña)</li>
+                        <li>Uso 100% en la nube</li>
+                        <li>Desde cualquier dispositivo y en cualquier lugar</li>
+                    </ol>
+                </div>
+                <div>
+                    <div class="phone-mock">
+                        <div class="phone-screen">
+                            <div class="phone-notch"></div>
+                            <div class="phone-logo">COMPANYGAME<small class="tagline">APRENDE SIMULANDO</small></div>
+                            <div class="phone-title">Acceso a la plataforma CompanyGame</div>
+                            <div class="phone-field">E-mail <span style="color:var(--accent-red);">*</span></div>
+                            <div class="phone-field">Código personal <span style="color:var(--accent-red);">*</span></div>
+                            <div class="phone-btn">ENTRAR</div>
+                            <div class="phone-recover">¿Olvidó su Código personal? / Recupere su contraseña</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== SLIDE 4: DIVISORIA — ENTORNO DE SIMULACIÓN [FIJO] ===================== -->
+    <div class="slide" id="slide4">
+        <div class="section-divider">
+            <div class="sd-icon">🖥️</div>
+            <div class="sd-eyebrow">Sección</div>
+            <h1>Entorno de Simulación</h1>
+            <p>Conoce la plataforma antes de empezar a competir</p>
+            <div class="sd-rule"></div>
+        </div>
+    </div>
+
+    <!-- ===================== SLIDE 5: MANUAL DEL SIMULADOR [FIJO — portada/link pendientes] ===================== -->
+    <div class="slide" id="slide5">
+        <div class="slide-header">
+            <h1>📖 Manual del Simulador</h1>
+            <h2>Tu guía de referencia para cada decisión del periodo</h2>
+            <div class="slide-number">03</div>
+        </div>
+        <div class="slide-content">
+            <div class="plataforma-cols">
+                <div>
+                    <div class="cartelera-container" id="manual-container">
+                        <img class="cartelera-img" src="assets/manual-cover.png" alt="Portada del Manual de FOCUS" loading="lazy"
+                             onclick="openLightbox('assets/manual-cover.png','Manual de FOCUS')"
+                             onerror="this.closest('#manual-container').style.display='none'; var p=document.getElementById('manual-pending'); if(p) p.style.display='block';">
+                    </div>
+                    <div class="reserved" id="manual-pending" style="display:none;">
+                        <h3>📖 Foto del manual — pendiente de archivo</h3>
+                        <p>Guarda la portada o una captura del manual como <code>assets/manual-cover.png</code> en la carpeta del proyecto y aparecerá aquí automáticamente.</p>
+                    </div>
+                </div>
+                <div>
+                    <p style="color:#555;line-height:1.7;margin-bottom:24px;">El manual explica en detalle cada área de decisión, las fórmulas del simulador y cómo interpretar el Cuadro de Mando. Consúltalo siempre que tengas dudas antes de enviar tus decisiones.</p>
+                    <a href="assets/ManualFocus_2018.pdf" target="_blank" rel="noopener" class="phone-btn" style="display:block;text-decoration:none;padding:16px;font-size:0.95em;">📥 DESCARGAR EL MANUAL</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== SLIDE 6: ¿QUÉ ES? [VARIABLE] ===================== -->
+    <div class="slide" id="slide6">
+        <div class="slide-header">
+            <h1>¿Qué es FOCUS?</h1>
+            <h2>Diseño y gestión estratégica de un centro deportivo con enfoque al cliente</h2>
+            <div class="slide-number">04</div>
+        </div>
+        <div class="slide-content">
+            <div class="card-grid cols4">
+                <div class="card">
+                    <div class="card-icon">🎯</div>
+                    <h3>Tu Misión</h3>
+                    <p>Planificar un <strong>nuevo centro deportivo</strong> tomando decisiones sobre ubicación, instalaciones, equipamiento, actividades, personal y marca — y luego gestionarlo durante <strong>3 periodos</strong> en competencia con otros gimnasios del mismo mercado.</p>
+                </div>
+                <div class="card bd-amber">
+                    <div class="card-icon">🏙️</div>
+                    <h3>El Mercado</h3>
+                    <p>Una ciudad de tamaño medio organizada en <strong>4 distritos</strong>, cada uno con distinto volumen de población y perfil de habitantes (edad, renta). El simulador entrega toda esta información antes de decidir.</p>
+                </div>
+                <div class="card bd-green">
+                    <div class="card-icon">🔄</div>
+                    <h3>Dos Fases</h3>
+                    <p><strong>Planificar</strong>: diseñas el negocio y proyectas resultados a 3 años. <strong>Competir</strong>: gestionas el centro en un mercado competitivo real, ajustando precios, promoción y servicio.</p>
+                </div>
+                <div class="card bd-teal">
+                    <div class="card-icon">🏋️</div>
+                    <h3>Sector y Nivel</h3>
+                    <p>Servicios – Entretenimiento (fitness). <strong>Nivel 6-7</strong>, modalidad competitiva, con una duración de <strong>24 a 48 horas</strong> de simulación.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== SLIDE 7: CADENA DE VALOR [VARIABLE] ===================== -->
+    <div class="slide" id="slide7">
+        <div class="slide-header">
+            <h1>🔗 Cadena de Valor</h1>
+            <h2>De la planificación del centro a la competencia en el mercado</h2>
+            <div class="slide-number">05</div>
+        </div>
+        <div class="slide-content">
+            <div class="value-chain">
+                <div class="chain-box"><span class="cb-emoji">🗺️</span>Mercado y<br>Propuesta de Valor</div>
+                <div class="chain-arrow">➜</div>
+                <div class="chain-box cb-amber"><span class="cb-emoji">🏢</span>Local e<br>Instalaciones</div>
+                <div class="chain-arrow">➜</div>
+                <div class="chain-box cb-green"><span class="cb-emoji">🏷️</span>Marca y<br>Organización</div>
+                <div class="chain-arrow">➜</div>
+                <div class="chain-box cb-teal"><span class="cb-emoji">💰</span>Ingresos y<br>Resultados</div>
+                <div class="chain-arrow">➜</div>
+                <div class="chain-box"><span class="cb-emoji">🏁</span>Competir en<br>el Mercado</div>
+            </div>
+
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon">🗺️</div>
+                    <h3>Mercado y Propuesta de Valor</h3>
+                    <p>Analizas los 4 distritos y los 5 segmentos de demanda, y defines las prioridades estratégicas y el posicionamiento de tu centro.</p>
+                </div>
+                <div class="card bd-amber">
+                    <div class="card-icon">🏢</div>
+                    <h3>Local e Instalaciones</h3>
+                    <p>Eliges local, distribuyes la superficie entre instalaciones (fitness, piscina, squash-pádel, estética, etc.) y defines su nivel de calidad.</p>
+                </div>
+                <div class="card bd-green">
+                    <div class="card-icon">🏷️</div>
+                    <h3>Marca y Organización</h3>
+                    <p>Diseñas la marca, el plan de acción comercial y dimensionas la plantilla y el perfil del personal del centro.</p>
+                </div>
+                <div class="card bd-teal">
+                    <div class="card-icon">💰</div>
+                    <h3>Ingresos y Resultados</h3>
+                    <p>El simulador estima ocupación, socios e ingresos, y proyecta el resultado económico de los primeros 3 años.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🏁</div>
+                    <h3>Competir</h3>
+                    <p>Gestionas precios, promoción y servicio en un mercado real frente a otros gimnasios durante 3 periodos de simulación.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== SLIDE 8: PRODUCCIÓN / INSUMOS [VARIABLE] ===================== -->
+    <div class="slide" id="slide8">
+        <div class="slide-header">
+            <h1>🏗️ Diseño del Centro</h1>
+            <h2>Instalaciones, niveles de calidad y presupuesto de inversión</h2>
+            <div class="slide-number">06</div>
+        </div>
+        <div class="slide-content">
+            <p style="color:#555;line-height:1.7;">Una vez elegido el local, el equipo distribuye toda su superficie entre 8 instalaciones y define su nivel de calidad. A mayor calidad, mayor atractivo para el cliente — pero también mayor inversión.</p>
+
+            <table class="data-table">
+                <thead>
+                    <tr><th>Instalación</th><th>Rol en la propuesta de valor</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>🏋️ Sala Fitness</td><td>Núcleo del centro: máquinas y peso libre para el entrenamiento diario.</td></tr>
+                    <tr><td>🏊 Piscina</td><td>Clave para actividades acuáticas y para segmentos Senior y Healthy.</td></tr>
+                    <tr><td>🎾 Squash-Pádel</td><td>Atrae al segmento Deportista y Ejecutivo con actividad competitiva.</td></tr>
+                    <tr><td>🧘 Sala de Actividades</td><td>Espacio para las clases dirigidas (yoga, spinning, pilates, etc.).</td></tr>
+                    <tr><td>💆 Fisioterapia y Recuperación</td><td>Refuerza el trato personalizado y la fidelización de socios.</td></tr>
+                    <tr><td>💅 Estética</td><td>Servicio complementario, relevante para el segmento Healthy.</td></tr>
+                    <tr><td>☕ Cafetería</td><td>Genera ingresos adicionales y mejora la experiencia del socio.</td></tr>
+                    <tr><td>🚪 Zonas Comunes</td><td>Confort general: recepción, vestuarios y espacios de espera.</td></tr>
+                </tbody>
+            </table>
+
+            <div class="card-grid cols4" style="margin-top:34px;">
+                <div class="card">
+                    <div class="card-icon">1️⃣</div>
+                    <h3>Funcional</h3>
+                    <p>Decoración básica. No convence a los segmentos más exigentes, pero es suficiente para otros.</p>
+                </div>
+                <div class="card bd-amber">
+                    <div class="card-icon">2️⃣</div>
+                    <h3>Estándar</h3>
+                    <p>Aire acondicionado en todas las instalaciones, buena decoración y confort medio.</p>
+                </div>
+                <div class="card bd-green">
+                    <div class="card-icon">3️⃣</div>
+                    <h3>Superior</h3>
+                    <p>Altos estándares de calidad — muy positivo para los segmentos más exigentes.</p>
+                </div>
+                <div class="card bd-teal">
+                    <div class="card-icon">4️⃣</div>
+                    <h3>Premium</h3>
+                    <p>Calidad y acabados de máximo nivel en todas las instalaciones del centro.</p>
+                </div>
+            </div>
+
+            <div style="margin-top:30px; border-radius:14px; border-left:5px solid var(--amber); background:#FEF7E6; padding:20px 26px;">
+                <h3 style="font-family:'Montserrat',sans-serif; color:var(--primary-dark); margin-bottom:8px;">💰 Límite presupuestario</h3>
+                <p style="color:#555; line-height:1.7;">Las inversiones en Instalaciones no pueden superar <strong>8.5 millones $/€</strong> si alquilas el local, o <strong>10.5 millones $/€</strong> si lo compras. Superar el límite genera un coste extraordinario que puede afectar tus resultados.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== SLIDE 9: ÁREAS DE DECISIÓN [VARIABLE] ===================== -->
+    <div class="slide" id="slide9">
+        <div class="slide-header">
+            <h1>⚙️ Áreas de Decisión</h1>
+            <h2>7 frentes de decisión, desde la planificación hasta los resultados</h2>
+            <div class="slide-number">07</div>
+        </div>
+        <div class="slide-content">
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon">🧭</div>
+                    <h3>Propuesta de Valor</h3>
+                    <p>Define el posicionamiento del centro y la segmentación de clientes prioritaria.</p>
+                </div>
+                <div class="card bd-amber">
+                    <div class="card-icon">🏗️</div>
+                    <h3>Diseño del Centro</h3>
+                    <p>Local, instalaciones y servicios que ofrecerá el centro deportivo.</p>
+                </div>
+                <div class="card bd-green">
+                    <div class="card-icon">🏋️</div>
+                    <h3>Actividades</h3>
+                    <p>Portafolio de actividades dirigidas y servicios complementarios.</p>
+                </div>
+                <div class="card bd-teal">
+                    <div class="card-icon">👥</div>
+                    <h3>Servicios y Organización</h3>
+                    <p>Equipo, roles y experiencia del cliente en el centro.</p>
+                </div>
+                <div class="card bd-purple">
+                    <div class="card-icon">🏷️</div>
+                    <h3>Marketing y Marca</h3>
+                    <p>Marca, comunicación y plan de acción comercial del centro.</p>
+                </div>
+                <div class="card bd-red">
+                    <div class="card-icon">📈</div>
+                    <h3>Ocupación e Ingresos</h3>
+                    <p>Políticas de llenado, ventas y generación de ingresos.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">💵</div>
+                    <h3>Resultados</h3>
+                    <p>Gestión económica y evaluación del desempeño del centro.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== SLIDE 10: SEGMENTOS [VARIABLE] ===================== -->
+    <div class="slide" id="slide10">
+        <div class="slide-header">
+            <h1>🎯 Segmentos</h1>
+            <h2>5 perfiles de demanda con preferencias muy distintas</h2>
+            <div class="slide-number">08</div>
+        </div>
+        <div class="slide-content">
+            <div class="two-col">
+                <div>
+                    <div class="seg-row" style="background:#FEF7E6;">
+                        <span class="seg-emoji">🏃</span>
+                        <div><strong>Deportista</strong><br><small>Usa el centro casi a diario; alto grado de participación social y deportiva.</small></div>
+                    </div>
+                    <div class="seg-row" style="background:#F2FAFB;">
+                        <span class="seg-emoji">🚶</span>
+                        <div><strong>Aficionado</strong><br><small>Viene para mantenerse en forma y guardar la línea.</small></div>
+                    </div>
+                    <div class="seg-row" style="background:#EFF9F2;">
+                        <span class="seg-emoji">🧓</span>
+                        <div><strong>Senior</strong><br><small>A partir de 61 años; busca mantenerse en forma y hacer amistades.</small></div>
+                    </div>
+                    <div class="seg-row" style="background:#F1EEFB;">
+                        <span class="seg-emoji">💼</span>
+                        <div><strong>Ejecutivo</strong><br><small>Poco tiempo disponible; prioriza ubicación y calidad del centro.</small></div>
+                    </div>
+                    <div class="seg-row" style="background:#FEF7E6;">
+                        <span class="seg-emoji">🧘‍♀️</span>
+                        <div><strong>Healthy</strong><br><small>Preocupado por su salud y estética; valora el confort de las instalaciones.</small></div>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="font-family:'Montserrat',sans-serif; color:var(--primary-dark); margin-bottom:14px;">🏙️ El mercado: 4 distritos</h3>
+                    <p style="color:#555; line-height:1.7; margin-bottom:22px;">FOCUS se desarrolla en una ciudad de tamaño medio organizada en <strong>4 distritos</strong>. Cada segmento tiene un peso específico distinto en cada distrito, según el volumen de población y su perfil (edad, renta).</p>
+                    <h3 style="font-family:'Montserrat',sans-serif; color:var(--primary-dark); margin-bottom:14px;">✅ Criterios de elección</h3>
+                    <p style="color:#555; line-height:1.7; margin-bottom:16px;">Al elegir su centro deportivo, los segmentos priorizan de forma distinta estos criterios:</p>
+                    <div>
+                        <span class="badge badge-orange">📍 Ubicación</span>
+                        <span class="badge badge-teal">💲 Precio</span>
+                        <span class="badge badge-green">🏢 Instalaciones</span>
+                        <span class="badge badge-amber">🙋 Servicio</span>
+                        <span class="badge badge-purple">🏷️ Marca</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== SLIDE 11: VALOR DE LA COMPAÑÍA [VARIABLE] ===================== -->
+    <div class="slide" id="slide11">
+        <div class="slide-header">
+            <h1>🏆 Valor de la Compañía</h1>
+            <h2>La métrica que sintetiza tu ranking frente a los demás equipos</h2>
+            <div class="slide-number">09</div>
+        </div>
+        <div class="slide-content">
+            <p style="color:#555;line-height:1.7;">El Valor de la Compañía representa la "cotización" que los inversores asignan a tu centro deportivo: refleja tanto los resultados de cada periodo como tu capacidad de mejorarlos en el futuro. En la fase de Planificación se reparten hasta <strong>200 puntos</strong> que condicionan el arranque de la fase de gestión.</p>
+
+            <div class="factor-accordion">
+                <div class="factor-item">
+                    <div class="factor-header factor-orange" onclick="toggleFactor(this)">
+                        <span>💵 Resultados Económicos</span>
+                        <span style="display:flex; align-items:center; gap:14px;"><span class="factor-tag">40%</span><span class="factor-icon">▼</span></span>
+                    </div>
+                    <div class="factor-body"><div class="factor-content">
+                        <p><strong>Descripción:</strong> Es el factor de mayor peso en el ranking final.</p>
+                        <p><strong>¿Qué evalúa?</strong> Se vincula directamente con los beneficios obtenidos por la compañía, considerando tanto el valor alcanzado en cada periodo como su evolución en los últimos periodos.</p>
+                        <div class="factor-consejo"><strong>💡 Consejo:</strong> No sacrifiques la rentabilidad por ganar socios: un crecimiento sin control de costes puede hundir este factor.</div>
+                    </div></div>
+                </div>
+                <div class="factor-item">
+                    <div class="factor-header factor-amber" onclick="toggleFactor(this)">
+                        <span>🏷️ Valor de Marca</span>
+                        <span style="display:flex; align-items:center; gap:14px;"><span class="factor-tag">15%</span><span class="factor-icon">▼</span></span>
+                    </div>
+                    <div class="factor-body"><div class="factor-content">
+                        <p><strong>Descripción:</strong> Segundo factor en peso dentro del ranking.</p>
+                        <p><strong>¿Qué evalúa?</strong> La valoración alcanzada por tu marca entre los segmentos de demanda, en una escala de 10 a 100.</p>
+                        <div class="factor-consejo"><strong>💡 Consejo:</strong> Adapta tu marca y tus acciones de marketing a los segmentos que priorizaste — una marca genérica no conecta igual con todos.</div>
+                    </div></div>
+                </div>
+                <div class="factor-item">
+                    <div class="factor-header factor-teal" onclick="toggleFactor(this)">
+                        <span>🏗️ Nivel de Equipamiento</span>
+                        <span style="display:flex; align-items:center; gap:14px;"><span class="factor-tag">13%</span><span class="factor-icon">▼</span></span>
+                    </div>
+                    <div class="factor-body"><div class="factor-content">
+                        <p><strong>Descripción:</strong> Refleja la calidad física de tu centro.</p>
+                        <p><strong>¿Qué evalúa?</strong> La calidad y el mantenimiento de los equipos e instalaciones del centro deportivo.</p>
+                        <div class="factor-consejo"><strong>💡 Consejo:</strong> El presupuesto de mantenimiento (0,75% a 5% de la inversión) impacta directamente aquí — no lo recortes de más.</div>
+                    </div></div>
+                </div>
+                <div class="factor-item">
+                    <div class="factor-header factor-green" onclick="toggleFactor(this)">
+                        <span>👥 Nivel de Servicio y Actividades</span>
+                        <span style="display:flex; align-items:center; gap:14px;"><span class="factor-tag">12%</span><span class="factor-icon">▼</span></span>
+                    </div>
+                    <div class="factor-body"><div class="factor-content">
+                        <p><strong>Descripción:</strong> Mide la experiencia real que vive el socio en el centro.</p>
+                        <p><strong>¿Qué evalúa?</strong> La satisfacción por el servicio prestado y la valoración de las actividades ofrecidas.</p>
+                        <div class="factor-consejo"><strong>💡 Consejo:</strong> El perfil y tamaño de la plantilla, y el coste por hora de actividad, son las palancas más directas de este factor.</div>
+                    </div></div>
+                </div>
+                <div class="factor-item">
+                    <div class="factor-header factor-purple" onclick="toggleFactor(this)">
+                        <span>📊 Participación de Mercado</span>
+                        <span style="display:flex; align-items:center; gap:14px;"><span class="factor-tag">10%</span><span class="factor-icon">▼</span></span>
+                    </div>
+                    <div class="factor-body"><div class="factor-content">
+                        <p><strong>Descripción:</strong> Te compara directamente con el resto de gimnasios del mercado.</p>
+                        <p><strong>¿Qué evalúa?</strong> La participación de mercado alcanzada por tu centro frente a la competencia.</p>
+                        <div class="factor-consejo"><strong>💡 Consejo:</strong> Vigila a la competencia al inicio de cada periodo: sus decisiones afectan directamente tu cuota de mercado.</div>
+                    </div></div>
+                </div>
+                <div class="factor-item">
+                    <div class="factor-header factor-blue" onclick="toggleFactor(this)">
+                        <span>🧭 Propuesta de Valor</span>
+                        <span style="display:flex; align-items:center; gap:14px;"><span class="factor-tag">10%</span><span class="factor-icon">▼</span></span>
+                    </div>
+                    <div class="factor-body"><div class="factor-content">
+                        <p><strong>Descripción:</strong> Evalúa la coherencia de tu estrategia inicial.</p>
+                        <p><strong>¿Qué evalúa?</strong> La valoración de tu propuesta de valor, considerando su adaptación a las preferencias de los segmentos y los resultados alcanzados.</p>
+                        <div class="factor-consejo"><strong>💡 Consejo:</strong> Mantén coherencia entre el distrito, el local, las instalaciones y los segmentos que priorizaste — una propuesta de valor "mixta" pierde fuerza.</div>
+                    </div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== SLIDE 12: DIVISORIA — PLANIFICACIÓN [FIJO] ===================== -->
+    <div class="slide" id="slide12">
+        <div class="section-divider">
+            <div class="sd-icon">🧭</div>
+            <div class="sd-eyebrow">Sección</div>
+            <h1>Planificación</h1>
+            <p>Diseña tu centro deportivo antes de abrir sus puertas</p>
+            <div class="sd-rule"></div>
+        </div>
+    </div>
+
+    <!-- ===================== SLIDE 13: PLANIFICACIÓN [VARIABLE] ===================== -->
+    <!-- Recorrido por las 9 actividades del menú de Planificación. Capturas: assets/plan-<actividad>.jpg (todas 1240×780) -->
+    <div class="slide" id="slide13">
+        <div class="slide-header">
+            <h1>🧭 Planificación del Centro</h1>
+            <h2>9 actividades para diseñar tu centro deportivo antes de abrir sus puertas</h2>
+            <div class="slide-number">10</div>
+        </div>
+        <div class="slide-content">
+            <div class="phase-intro">
+                <span class="badge badge-teal">Se realiza una sola vez</span>
+                <span>Recorre las actividades en orden: cada una tiene varias pestañas internas. Al finalizar, el plan se evalúa y comienza la <strong>gestión por periodos</strong>.</span>
+            </div>
+
+            <div class="plan-steps">
+                <button class="plan-step active" onclick="showPlanStep(this,1)"><span class="ps-num">1</span><span class="ps-label">Mercado</span></button>
+                <button class="plan-step" onclick="showPlanStep(this,2)"><span class="ps-num">2</span><span class="ps-label">Propuesta de Valor</span></button>
+                <button class="plan-step" onclick="showPlanStep(this,3)"><span class="ps-num">3</span><span class="ps-label">Local</span></button>
+                <button class="plan-step" onclick="showPlanStep(this,4)"><span class="ps-num">4</span><span class="ps-label">Instalaciones</span></button>
+                <button class="plan-step" onclick="showPlanStep(this,5)"><span class="ps-num">5</span><span class="ps-label">Servicios</span></button>
+                <button class="plan-step" onclick="showPlanStep(this,6)"><span class="ps-num">6</span><span class="ps-label">Marketing</span></button>
+                <button class="plan-step" onclick="showPlanStep(this,7)"><span class="ps-num">7</span><span class="ps-label">Organización</span></button>
+                <button class="plan-step" onclick="showPlanStep(this,8)"><span class="ps-num">8</span><span class="ps-label">Resultados</span></button>
+                <button class="plan-step" onclick="showPlanStep(this,9)"><span class="ps-num">9</span><span class="ps-label">Finalizar</span></button>
+            </div>
+
+            <div class="plan-panel active" data-step="1">
+                <div class="dec-block">
+                    <div class="dec-head"><div class="dec-num">1</div><div><h3>Mercado</h3><p>Define la demanda de tu gimnasio: conoce el entorno de la simulación, tu ciudad y sus distritos, los segmentos de clientes y la competencia que ya opera en el mercado.</p></div></div>
+                    <div class="plan-tabs"><span class="plan-tabs-label">Pestañas:</span><span class="plan-tab">Entorno de simulación</span><span class="plan-tab">Datos macroeconómicos</span><span class="plan-tab">Presentación de tu ciudad</span><span class="plan-tab">Conoce el mercado</span><span class="plan-tab">Preferencias segmentos</span><span class="plan-tab">Tamaño segmentos</span><span class="plan-tab">Conoce a la competencia</span></div>
+                    <div class="dec-shot"><img src="assets/plan-mercado.jpg" alt="Planificación — Mercado" loading="lazy" onclick="openLightbox('assets/plan-mercado.jpg','Planificación — Mercado')"></div>
+                </div>
+            </div>
+
+            <div class="plan-panel" data-step="2">
+                <div class="dec-block">
+                    <div class="dec-head"><div class="dec-num">2</div><div><h3>Propuesta de Valor</h3><p>Define las directrices estratégicas: la oportunidad que visualizas, las alternativas, tu propuesta de valor, las prioridades estratégicas, los segmentos prioritarios y el distrito donde ubicarás el centro.</p></div></div>
+                    <div class="plan-tabs"><span class="plan-tabs-label">Pestañas:</span><span class="plan-tab">Define directrices</span><span class="plan-tab">Segmentos</span><span class="plan-tab">Ubicación</span><span class="plan-tab">Revisa el contenido</span></div>
+                    <div class="dec-shot"><img src="assets/plan-propuesta.jpg" alt="Planificación — Propuesta de Valor" loading="lazy" onclick="openLightbox('assets/plan-propuesta.jpg','Planificación — Propuesta de Valor')"></div>
+                </div>
+            </div>
+
+            <div class="plan-panel" data-step="3">
+                <div class="dec-block">
+                    <div class="dec-head"><div class="dec-num">3</div><div><h3>Local</h3><p>Conoce los locales disponibles, analiza su capacidad y selecciona —argumentando tu elección— el local más adecuado para tu estrategia.</p></div></div>
+                    <div class="plan-tabs"><span class="plan-tabs-label">Pestañas:</span><span class="plan-tab">Locales disponibles</span><span class="plan-tab">Analiza la capacidad</span><span class="plan-tab">Selección del local</span><span class="plan-tab">Argumentación</span></div>
+                    <div class="dec-shot"><img src="assets/plan-local.jpg" alt="Planificación — Local" loading="lazy" onclick="openLightbox('assets/plan-local.jpg','Planificación — Local')"></div>
+                </div>
+            </div>
+
+            <div class="plan-panel" data-step="4">
+                <div class="dec-block">
+                    <div class="dec-head"><div class="dec-num">4</div><div><h3>Instalaciones</h3><p>Define tu producto: distribuye la superficie del local entre las diferentes zonas, fija el nivel de calidad de las instalaciones y conoce la inversión total requerida.</p></div></div>
+                    <div class="plan-tabs"><span class="plan-tabs-label">Pestañas:</span><span class="plan-tab">Instalaciones del centro</span><span class="plan-tab">Preferencias segmento</span><span class="plan-tab">Distribución superficie</span><span class="plan-tab">Calidades edificio</span><span class="plan-tab">Evaluación</span><span class="plan-tab">Total Inversión</span></div>
+                    <div class="dec-shot"><img src="assets/plan-instalaciones.jpg" alt="Planificación — Instalaciones" loading="lazy" onclick="openLightbox('assets/plan-instalaciones.jpg','Planificación — Instalaciones')"></div>
+                </div>
+            </div>
+
+            <div class="plan-panel" data-step="5">
+                <div class="dec-block">
+                    <div class="dec-head"><div class="dec-num">5</div><div><h3>Servicios</h3><p>Configura el programa de actividades y los servicios de valor agregado (solárium, parking, estética…), en coherencia con el espacio asignado y las preferencias de tus segmentos.</p></div></div>
+                    <div class="plan-tabs"><span class="plan-tabs-label">Pestañas:</span><span class="plan-tab">Preferencias Segmentos</span><span class="plan-tab">Actividades</span><span class="plan-tab">Instalaciones</span><span class="plan-tab">Decisión Actividades</span><span class="plan-tab">Evaluación Actividades</span><span class="plan-tab">Otros servicios</span></div>
+                    <div class="dec-shot"><img src="assets/plan-servicios.jpg" alt="Planificación — Servicios" loading="lazy" onclick="openLightbox('assets/plan-servicios.jpg','Planificación — Servicios')"></div>
+                </div>
+            </div>
+
+            <div class="plan-panel" data-step="6">
+                <div class="dec-block">
+                    <div class="dec-head"><div class="dec-num">6</div><div><h3>Marketing</h3><p>Evalúa el atractivo de tu centro para cada segmento, fija precios de cuotas, matrículas y servicios, diseña tu marca y asigna el presupuesto anual de promoción.</p></div></div>
+                    <div class="plan-tabs"><span class="plan-tabs-label">Pestañas:</span><span class="plan-tab">Atractivo</span><span class="plan-tab">Precios Cuotas</span><span class="plan-tab">Matrículas</span><span class="plan-tab">Precios Servicios</span><span class="plan-tab">Diseño de la marca</span><span class="plan-tab">Acciones</span><span class="plan-tab">Plan de Acción</span><span class="plan-tab">Evaluación</span></div>
+                    <div class="dec-shot"><img src="assets/plan-marketing.jpg" alt="Planificación — Marketing" loading="lazy" onclick="openLightbox('assets/plan-marketing.jpg','Planificación — Marketing')"></div>
+                </div>
+            </div>
+
+            <div class="plan-panel" data-step="7">
+                <div class="dec-block">
+                    <div class="dec-head"><div class="dec-num">7</div><div><h3>Organización</h3><p>Define los gastos de mantenimiento y la plantilla: cantidad, perfil y salario del personal por departamento para ofrecer el nivel de servicio que exige tu estrategia.</p></div></div>
+                    <div class="plan-tabs"><span class="plan-tabs-label">Pestañas:</span><span class="plan-tab">Mantenimiento</span><span class="plan-tab">Plantilla</span><span class="plan-tab">Preferencias</span><span class="plan-tab">Salario</span><span class="plan-tab">Personal por Departamento</span><span class="plan-tab">Perfil Personal</span><span class="plan-tab">Evaluación</span></div>
+                    <div class="dec-shot"><img src="assets/plan-organizacion.jpg" alt="Planificación — Organización" loading="lazy" onclick="openLightbox('assets/plan-organizacion.jpg','Planificación — Organización')"></div>
+                </div>
+            </div>
+
+            <div class="plan-panel" data-step="8">
+                <div class="dec-block">
+                    <div class="dec-head"><div class="dec-num">8</div><div><h3>Resultados</h3><p>Estima la ocupación y los ingresos, revisa costos, gastos e inversión, y valida en la cuenta de resultados que tu centro cumpla la rentabilidad mínima exigida por los inversores.</p></div></div>
+                    <div class="plan-tabs"><span class="plan-tabs-label">Pestañas:</span><span class="plan-tab">Ocupación</span><span class="plan-tab">Estimación ocupación</span><span class="plan-tab">Estimación Ingresos</span><span class="plan-tab">Coste de las Ventas</span><span class="plan-tab">Gastos de Operación</span><span class="plan-tab">Inversión</span><span class="plan-tab">Cuenta de Resultados</span></div>
+                    <div class="dec-shot"><img src="assets/plan-resultados.jpg" alt="Planificación — Resultados" loading="lazy" onclick="openLightbox('assets/plan-resultados.jpg','Planificación — Resultados')"></div>
+                </div>
+            </div>
+
+            <div class="plan-panel" data-step="9">
+                <div class="dec-block">
+                    <div class="dec-head"><div class="dec-num">9</div><div><h3>Finalizar</h3><p>Revisa la evaluación global de tu plan: todos los indicadores deben quedar en verde. Si alguno no cumple, ajusta las decisiones que lo afectan antes de iniciar la gestión.</p></div></div>
+                    <div class="plan-tabs"><span class="plan-tabs-label">Pestañas:</span><span class="plan-tab">Evaluación Global</span><span class="plan-tab">Iniciar Gestión</span></div>
+                    <div class="dec-shot"><img src="assets/plan-finalizar.jpg" alt="Planificación — Finalizar" loading="lazy" onclick="openLightbox('assets/plan-finalizar.jpg','Planificación — Finalizar')"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== SLIDE 14: DIVISORIA — CUADRO DE MANDO [FIJO] ===================== -->
+    <div class="slide" id="slide14">
+        <div class="section-divider">
+            <div class="sd-icon">📊</div>
+            <div class="sd-eyebrow">Sección</div>
+            <h1>Cuadro de Mando</h1>
+            <p>Así verás los resultados de tu empresa en el simulador</p>
+            <div class="sd-rule"></div>
+        </div>
+    </div>
+
+    <!-- ===================== SLIDE 15: CUADRO DE MANDO (PASOS) [VARIABLE] ===================== -->
+    <div class="slide" id="slide15">
+        <div class="slide-header">
+            <h1>📊 Cuadro de Mando</h1>
+            <h2>Los informes con los que arrancas la gestión de tu centro deportivo</h2>
+            <div class="slide-number">11</div>
+        </div>
+        <div class="slide-content">
+            <div class="phase-intro">
+                <span class="badge badge-teal">Periodo 0</span>
+                <span>Al iniciar la gestión, el Cuadro de Mando muestra los <strong>informes de Valor de la Compañía</strong>. A partir del periodo 1 se suman los informes de resultados de cada periodo.</span>
+            </div>
+
+            <div class="plan-steps" style="--steps:3">
+                <button class="plan-step active" onclick="showPlanStep(this,1)"><span class="ps-num">1</span><span class="ps-label">Valor de la Compañía</span></button>
+                <button class="plan-step" onclick="showPlanStep(this,2)"><span class="ps-num">2</span><span class="ps-label">Competidores directos</span></button>
+                <button class="plan-step" onclick="showPlanStep(this,3)"><span class="ps-num">3</span><span class="ps-label">Ponderación</span></button>
+            </div>
+
+            <div class="plan-panel active" data-step="1">
+                <div class="dec-block">
+                    <div class="dec-head"><div class="dec-num">1</div><div><h3>Valor de la Compañía</h3><p>Indicador agregado que resume los resultados económicos, la participación de mercado, la rentabilidad sobre la inversión, el valor de marca, el nivel de instalaciones y el nivel de servicio y actividades. Se presenta en tabla y gráfico comparativo por grupo.</p></div></div>
+                    <div class="plan-why"><div class="cm-why-label">🔎 Por qué analizarlo</div><div class="cm-why-text">Es la métrica que define el ranking. En el periodo 0 todos los grupos parten del mismo valor: desde aquí, cada decisión empieza a marcar la diferencia.</div></div>
+                    <div class="dec-shot"><img src="assets/cm-valor.jpg" alt="Cuadro de Mando — Valor de la Compañía" loading="lazy" onclick="openLightbox('assets/cm-valor.jpg','Cuadro de Mando — Valor de la Compañía')"></div>
+                </div>
+            </div>
+
+            <div class="plan-panel" data-step="2">
+                <div class="dec-block">
+                    <div class="dec-head"><div class="dec-num">2</div><div><h3>Datos de Competidores Directos</h3><p>Valores de planificación de cada grupo: distrito, local, m², precio medio, socios, ingresos totales y resultado antes de intereses. El Business Plan presentado ya no puede modificarse.</p></div></div>
+                    <div class="plan-why"><div class="cm-why-label">🔎 Por qué analizarlo</div><div class="cm-why-text">Te muestra cómo se posicionaron tus rivales —dónde se ubicaron, a qué precio y con qué resultado esperado— para ajustar tu estrategia frente a ellos.</div></div>
+                    <div class="dec-shot"><img src="assets/cm-competidores.jpg" alt="Cuadro de Mando — Datos de Competidores Directos" loading="lazy" onclick="openLightbox('assets/cm-competidores.jpg','Cuadro de Mando — Datos de Competidores Directos')"></div>
+                </div>
+            </div>
+
+            <div class="plan-panel" data-step="3">
+                <div class="dec-block">
+                    <div class="dec-head"><div class="dec-num">3</div><div><h3>Ponderación de la Valoración</h3><p>Puntaje que aporta cada parámetro al valor de la empresa: resultados económicos, rentabilidad, participación de mercado, valor de marca, instalaciones, servicio y actividades, propuesta de valor y fase de planificación.</p></div></div>
+                    <div class="plan-why"><div class="cm-why-label">🔎 Por qué analizarlo</div><div class="cm-why-text">Saber dónde se concentran los puntos te ayuda a priorizar: no todas las decisiones pesan lo mismo en el ranking final.</div></div>
+                    <div class="dec-shot"><img src="assets/cm-ponderacion.jpg" alt="Cuadro de Mando — Ponderación de la Valoración" loading="lazy" onclick="openLightbox('assets/cm-ponderacion.jpg','Cuadro de Mando — Ponderación de la Valoración')"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== SLIDE 16: DIVISORIA — DECISIONES DEL SIMULADOR [FIJO] ===================== -->
+    <div class="slide" id="slide16">
+        <div class="section-divider">
+            <div class="sd-icon">🕹️</div>
+            <div class="sd-eyebrow">Sección</div>
+            <h1>Las Decisiones del Simulador</h1>
+            <p>Las pantallas donde introduces tus decisiones cada periodo</p>
+            <div class="sd-rule"></div>
+        </div>
+    </div>
+
+    <!-- ===================== SLIDE 17: DECISIONES DEL SIMULADOR (PASOS) [VARIABLE] ===================== -->
+    <div class="slide" id="slide17">
+        <div class="slide-header">
+            <h1>🕹️ Las Decisiones del Simulador</h1>
+            <h2>El proyecto de decoración y las decisiones de gestión de cada periodo</h2>
+            <div class="slide-number">12</div>
+        </div>
+        <div class="slide-content">
+            <div class="phase-intro">
+                <span class="badge badge-teal">Cada periodo</span>
+                <span>Primero eliges el <strong>proyecto de decoración</strong> y luego, periodo a periodo, ajustas las <strong>decisiones de gestión</strong> del centro.</span>
+            </div>
+
+            <div class="plan-groups" style="--steps:5"><span style="grid-column:1 / 2">Proyecto Decoración</span><span style="grid-column:2 / 6">Decisiones Gestión</span></div>
+            <div class="plan-steps" style="--steps:5">
+                <button class="plan-step active" onclick="showPlanStep(this,1)"><span class="ps-num">1</span><span class="ps-label">Decoración</span></button>
+                <button class="plan-step" onclick="showPlanStep(this,2)"><span class="ps-num">2</span><span class="ps-label">Precios</span></button>
+                <button class="plan-step" onclick="showPlanStep(this,3)"><span class="ps-num">3</span><span class="ps-label">Servicios</span></button>
+                <button class="plan-step" onclick="showPlanStep(this,4)"><span class="ps-num">4</span><span class="ps-label">Marketing</span></button>
+                <button class="plan-step" onclick="showPlanStep(this,5)"><span class="ps-num">5</span><span class="ps-label">Personal</span></button>
+            </div>
+
+            <div class="plan-panel active" data-step="1">
+                <div class="dec-block">
+                    <div class="dec-head"><div class="dec-num">1</div><div><h3>Proyecto de Decoración</h3><p>Fase 1 de la gestión: elige la alternativa de decoración del centro — no involucrar a ningún decorador, iniciar un proceso de selección entre varios equipos, o contratar a un decorador ya conocido (aprox. 3% de la inversión total).</p></div></div>
+                    <div class="dec-shot"><img src="assets/dec-decoracion.jpg" alt="Decisiones — Proyecto de Decoración" loading="lazy" onclick="openLightbox('assets/dec-decoracion.jpg','Decisiones — Proyecto de Decoración')"></div>
+                </div>
+            </div>
+
+            <div class="plan-panel" data-step="2">
+                <div class="dec-block">
+                    <div class="dec-head"><div class="dec-num">2</div><div><h3>Precios</h3><p>Fija la cuota mensual para cada segmento (Deportista, Aficionado, Senior, Ejecutivo, Healthy), el precio medio de la matrícula de entrada y el alquiler de taquillas y toallas.</p></div></div>
+                    <div class="dec-shot"><img src="assets/dec-precios.jpg" alt="Decisiones — Precios" loading="lazy" onclick="openLightbox('assets/dec-precios.jpg','Decisiones — Precios')"></div>
+                </div>
+            </div>
+
+            <div class="plan-panel" data-step="3">
+                <div class="dec-block">
+                    <div class="dec-head"><div class="dec-num">3</div><div><h3>Servicios</h3><p>Decide el costo por hora de las actividades —que impacta directamente en la satisfacción— y el número de sesiones de cada una: Aerobic, AquaGym, Yoga, DanzaZen, SportFitness, Pilates y Spinning.</p></div></div>
+                    <div class="dec-shot"><img src="assets/dec-servicios.jpg" alt="Decisiones — Servicios" loading="lazy" onclick="openLightbox('assets/dec-servicios.jpg','Decisiones — Servicios')"></div>
+                </div>
+            </div>
+
+            <div class="plan-panel" data-step="4">
+                <div class="dec-block">
+                    <div class="dec-head"><div class="dec-num">4</div><div><h3>Marketing</h3><p>Define el presupuesto de marketing y comunicación y prioriza (de 1 a 5) cada acción: buzoneo, mailing, material promocional, patrocinio, visitas personales y publicidad en medios, medios especializados e internet.</p></div></div>
+                    <div class="dec-shot"><img src="assets/dec-marketing.jpg" alt="Decisiones — Marketing" loading="lazy" onclick="openLightbox('assets/dec-marketing.jpg','Decisiones — Marketing')"></div>
+                </div>
+            </div>
+
+            <div class="plan-panel" data-step="5">
+                <div class="dec-block">
+                    <div class="dec-head"><div class="dec-num">5</div><div><h3>Personal</h3><p>Decide el gasto en formación, el porcentaje de incremento salarial y el dimensionamiento de la plantilla por puesto: dirección, recepción-comercial, asesor-monitor, estética, fisioterapia, cafetería y mantenimiento.</p></div></div>
+                    <div class="dec-shot"><img src="assets/dec-personal.jpg" alt="Decisiones — Personal" loading="lazy" onclick="openLightbox('assets/dec-personal.jpg','Decisiones — Personal')"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== SLIDE 18: BUSINESS PLAN [VARIABLE] ===================== -->
+    <div class="slide" id="slide18">
+        <div class="slide-header">
+            <h1>📑 Business Plan</h1>
+            <h2>El resumen de todo lo que definiste en la Planificación</h2>
+            <div class="slide-number">13</div>
+        </div>
+        <div class="slide-content">
+            <div class="phase-intro">
+                <span class="badge badge-teal">Consulta</span>
+                <span>Es tu <strong>hoja de ruta</strong>: compárala con los resultados reales de cada periodo para saber si tu centro avanza según lo planeado.</span>
+            </div>
+            <div class="dec-block">
+                <div class="dec-head"><div class="dec-num">📑</div><div><h3>Planteamiento estratégico</h3><p>Reúne las directrices, instalaciones, servicios, marketing, organización, ocupación y resultados previstos de tu plan. Una vez presentado ante los accionistas, no puede modificarse.</p></div></div>
+                <div class="plan-tabs"><span class="plan-tabs-label">Pestañas:</span><span class="plan-tab">Directrices</span><span class="plan-tab">Instalaciones</span><span class="plan-tab">Servicios</span><span class="plan-tab">Marketing</span><span class="plan-tab">Organización</span><span class="plan-tab">Ocupación</span><span class="plan-tab">Resultados</span></div>
+                <div class="dec-shot narrow"><img src="assets/bp-resumen.jpg" alt="Business Plan — Planteamiento estratégico" loading="lazy" onclick="openLightbox('assets/bp-resumen.jpg','Business Plan — Planteamiento estratégico')"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== SLIDE 19: MÉTODOS DE IMPLEMENTACIÓN ===================== -->
+    <div class="slide" id="slide19">
+        <div class="slide-header">
+            <h1>📚 Métodos de Implementación</h1>
+            <h2>Cuatro formas de integrar el simulador en tu programa académico</h2>
+            <div class="slide-number">14</div>
+        </div>
+        <div class="slide-content">
+
+            <!-- MÉTODO DEDUCTIVO -->
+            <div class="method m-orange">
+                <div class="method-head">
+                    <h3>🔵 Método Deductivo</h3>
+                    <div class="method-quote">"El simulador como herramienta de demostración de aprendizaje"</div>
+                </div>
+                <div class="method-body">
+                    <div class="tl-title">Línea de Tiempo de Implementación</div>
+                    <div class="tl-sub">Parte de la teoría hacia la práctica. Ideal para validar conocimientos previos.</div>
+                    <div class="tl"><div class="tl-track">
+                        <div class="tl-node"><span class="tl-week"></span><span class="tl-label below wk">Semana 0</span></div>
+                        <div class="tl-node"><span class="tl-week"></span><span class="tl-label below wk">Semana 6</span></div>
+                        <div class="tl-node"><span class="tl-week"></span><span class="tl-label below wk">Semana 12</span></div>
+                        <div class="tl-node"><span class="tl-act">📖</span><span class="tl-label above">Manual</span></div>
+                        <div class="tl-node"><span class="tl-act">📊</span><span class="tl-label below">Cuadro de Mando</span></div>
+                        <div class="tl-node"><span class="tl-act">🎮</span><span class="tl-label above">Decisión 1</span></div>
+                        <div class="tl-node"><span class="tl-act">🎮</span><span class="tl-label below">Decisión 2</span></div>
+                        <div class="tl-node"><span class="tl-act">🏁</span><span class="tl-label above">Decisión Final</span></div>
+                        <div class="tl-node"><span class="tl-week"></span><span class="tl-label below wk">Semana 16</span></div>
+                    </div></div>
+                    <div class="features">
+                        <h4>📋 Características</h4>
+                        <ul>
+                            <li>Comienzas estudiando el manual y la teoría antes de decidir</li>
+                            <li>La primera ronda de decisiones ya está fundamentada en los conceptos aprendidos</li>
+                            <li>Análisis de resultados mediante el Cuadro de Mando</li>
+                            <li>El simulador demuestra y valida la teoría en la práctica</li>
+                            <li>Cierre consolidando teoría + evidencia de resultados</li>
+                        </ul>
+                        <div class="ideal"><strong>✅ Ideal para:</strong> Asignaturas formales, cursos con base teórica previa, evaluación de competencias.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MÉTODO INDUCTIVO -->
+            <div class="method m-green">
+                <div class="method-head">
+                    <h3>🟢 Método Inductivo</h3>
+                    <div class="method-quote">"El simulador como herramienta que motiva el aprendizaje"</div>
+                </div>
+                <div class="method-body">
+                    <div class="tl-title">Línea de Tiempo de Implementación</div>
+                    <div class="tl-sub">Parte de la experiencia práctica hacia la teoría. Aprendizaje por descubrimiento.</div>
+                    <div class="tl"><div class="tl-track">
+                        <div class="tl-node"><span class="tl-week"></span><span class="tl-label below wk">Semana 0</span></div>
+                        <div class="tl-node"><span class="tl-act">📖</span><span class="tl-label above">Manual</span></div>
+                        <div class="tl-node"><span class="tl-act">📊</span><span class="tl-label below">Cuadro de Mando</span></div>
+                        <div class="tl-node"><span class="tl-act">🎮</span><span class="tl-label above">Decisión 1</span></div>
+                        <div class="tl-node"><span class="tl-act">🎮</span><span class="tl-label below">Decisión 2</span></div>
+                        <div class="tl-node"><span class="tl-act">🏁</span><span class="tl-label above">Decisión Final</span></div>
+                        <div class="tl-node"><span class="tl-week"></span><span class="tl-label below wk">Semana 6</span></div>
+                        <div class="tl-node"><span class="tl-week"></span><span class="tl-label below wk">Semana 12</span></div>
+                        <div class="tl-node"><span class="tl-week"></span><span class="tl-label below wk">Semana 16</span></div>
+                    </div></div>
+                    <div class="features">
+                        <h4>📋 Características</h4>
+                        <ul>
+                            <li>Empiezas a decidir SIN leer el manual (aprendizaje por descubrimiento)</li>
+                            <li>Consultas el manual tras la primera experiencia para entender resultados</li>
+                            <li>Análisis de resultados mediante el Cuadro de Mando</li>
+                            <li>Segunda ronda informada por la teoría</li>
+                            <li>Cierre con aprendizaje consolidado tras reflexión sobre errores</li>
+                        </ul>
+                        <div class="ideal"><strong>✅ Ideal para:</strong> Bootcamps, workshops, aprendizaje experiencial, motivación inicial.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MÉTODO MIXTO -->
+            <div class="method m-teal">
+                <div class="method-head">
+                    <h3>🔷 Método Mixto</h3>
+                    <div class="method-quote">"El simulador como evidencia de aprendizaje acumulativo"</div>
+                </div>
+                <div class="method-body">
+                    <div class="tl-title">Línea de Tiempo de Implementación</div>
+                    <div class="tl-sub">Combina lo mejor de ambos mundos. Alterna teoría y práctica intercaladamente.</div>
+                    <div class="tl"><div class="tl-track">
+                        <div class="tl-node"><span class="tl-week"></span><span class="tl-label below wk">Semana 0</span></div>
+                        <div class="tl-node"><span class="tl-act">📖</span><span class="tl-label above">Manual</span></div>
+                        <div class="tl-node"><span class="tl-act">📊</span><span class="tl-label above">Cuadro de Mando</span></div>
+                        <div class="tl-node"><span class="tl-week"></span><span class="tl-label below wk">Semana 6</span></div>
+                        <div class="tl-node"><span class="tl-act">🎮</span><span class="tl-label above">Decisión 1</span></div>
+                        <div class="tl-node"><span class="tl-act">🎮</span><span class="tl-label above">Decisión 2</span></div>
+                        <div class="tl-node"><span class="tl-week"></span><span class="tl-label below wk">Semana 12</span></div>
+                        <div class="tl-node"><span class="tl-act">🏁</span><span class="tl-label above">Decisión Final</span></div>
+                        <div class="tl-node"><span class="tl-week"></span><span class="tl-label below wk">Semana 16</span></div>
+                    </div></div>
+                    <div class="features">
+                        <h4>📋 Características</h4>
+                        <ul>
+                            <li>Alternas bloques de teoría con rondas de decisión</li>
+                            <li>Cada concepto se aplica de inmediato en el simulador</li>
+                            <li>Análisis continuo con el Cuadro de Mando entre rondas</li>
+                            <li>Aprendizaje acumulativo: cada periodo construye sobre el anterior</li>
+                            <li>Cierre con evidencia del progreso a lo largo del curso</li>
+                        </ul>
+                        <div class="ideal"><strong>✅ Ideal para:</strong> Asignaturas semestrales y programas con sesiones regulares.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MÉTODOS ALTERNOS -->
+            <div class="method m-purple">
+                <div class="method-head">
+                    <h3>🟣 Métodos Alternos</h3>
+                    <div class="method-quote">"Presencial + Autónomo. Flexibilidad máxima"</div>
+                </div>
+                <div class="method-body">
+                    <div class="tl-title">Modalidades Disponibles</div>
+                    <div class="tl-sub">Dos formatos adaptables según necesidades del grupo.</div>
+
+                    <div class="alt-sub">📅 Presencial — Semanal</div>
+                    <div class="tl" style="padding:46px 8px 28px;"><div class="tl-track">
+                        <div class="tl-node"><span class="tl-week"></span><span class="tl-label below wk">Semana 0</span></div>
+                        <div class="tl-node"><span class="tl-week"></span><span class="tl-label below wk">Semana 1</span></div>
+                        <div class="tl-node"><span class="tl-week"></span><span class="tl-label below wk">Semana 2</span></div>
+                        <div class="tl-node"><span class="tl-week"></span><span class="tl-label below wk">Semana 3</span></div>
+                        <div class="tl-node"><span class="tl-week"></span><span class="tl-label below wk">Semana 4</span></div>
+                    </div></div>
+                    <div class="tl-auto">
+                        <span class="tl-auto-lbl">Trabajo<br>Autónomo</span>
+                        <div class="tl-auto-pins">
+                            <div class="tl-auto-pin"><span class="pin-lbl">Manual</span><span class="pin-c">📖</span></div>
+                            <div class="tl-auto-pin"><span class="pin-lbl">Decisión 1</span><span class="pin-c">🎮</span></div>
+                            <div class="tl-auto-pin"><span class="pin-lbl">Decisión 2</span><span class="pin-c">🎮</span></div>
+                            <div class="tl-auto-pin"><span class="pin-lbl">Decisión 3</span><span class="pin-c">🎮</span></div>
+                            <div class="tl-auto-pin"><span class="pin-lbl">Decisión Final</span><span class="pin-c">🏁</span></div>
+                        </div>
+                    </div>
+
+                    <div class="alt-sub">🔥 Presencial — Intensivo (fin de semana)</div>
+                    <div class="tl" style="padding:46px 8px 28px;"><div class="tl-track">
+                        <div class="tl-node"><span class="tl-week"></span><span class="tl-label below wk">Viernes</span></div>
+                        <div class="tl-node"><span class="tl-week"></span><span class="tl-label below wk">Sábado</span></div>
+                        <div class="tl-node"><span class="tl-week"></span><span class="tl-label below wk">Viernes</span></div>
+                        <div class="tl-node"><span class="tl-week"></span><span class="tl-label below wk">Sábado</span></div>
+                    </div></div>
+                    <div class="tl-auto">
+                        <span class="tl-auto-lbl">Trabajo<br>Autónomo</span>
+                        <div class="tl-auto-pins">
+                            <div class="tl-auto-pin"><span class="pin-lbl">Manual</span><span class="pin-c">📖</span></div>
+                            <div class="tl-auto-pin"><span class="pin-lbl">Decisión 1</span><span class="pin-c">🎮</span></div>
+                            <div class="tl-auto-pin"><span class="pin-lbl">Decisión 2</span><span class="pin-c">🎮</span></div>
+                            <div class="tl-auto-pin"><span class="pin-lbl">Decisión 3</span><span class="pin-c">🎮</span></div>
+                            <div class="tl-auto-pin"><span class="pin-lbl">Decisión Final</span><span class="pin-c">🏁</span></div>
+                        </div>
+                    </div>
+                    <div class="features">
+                        <h4>📋 Características</h4>
+                        <ul>
+                            <li>Combina sesiones presenciales con trabajo autónomo del equipo</li>
+                            <li>Disponible en formato semanal o intensivo de fin de semana</li>
+                            <li>Las decisiones se preparan de forma autónoma entre sesiones</li>
+                            <li>Máxima flexibilidad de calendario para el grupo</li>
+                            <li>El facilitador guía solo los puntos de encuentro clave</li>
+                        </ul>
+                        <div class="ideal"><strong>✅ Ideal para:</strong> Programas ejecutivos, educación continua y grupos con poca disponibilidad.</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===================== SLIDE 20: FAQ ===================== -->
+    <div class="slide" id="slide20">
+        <div class="slide-header">
+            <h1>❓ Preguntas Frecuentes</h1>
+            <h2>Las dudas más comunes antes de iniciar la simulación</h2>
+            <div class="slide-number">15</div>
+        </div>
+        <div class="slide-content">
+            <div class="accordion">
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">¿Cuántos periodos tiene la simulación?<span class="icon">▼</span></div>
+                    <div class="accordion-body"><div class="accordion-content">Depende de la configuración del profesor, pero típicamente entre <strong>3 y 5 periodos</strong>. Cada periodo representa un año de gestión de tu empresa.</div></div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">¿Cómo se forman los equipos?<span class="icon">▼</span></div>
+                    <div class="accordion-body"><div class="accordion-content">El profesor asigna equipos de <strong>3 a 5 personas</strong>. Cada equipo gestiona una empresa independiente que compite contra las demás.</div></div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">¿Puedo cambiar mis decisiones después de enviarlas?<span class="icon">▼</span></div>
+                    <div class="accordion-body"><div class="accordion-content">Sí, puedes modificarlas todas las veces que quieras mientras el periodo esté <strong>abierto</strong>. Cuando el profesor cierra el periodo y ejecuta la simulación, las decisiones son definitivas.</div></div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">¿Qué pasa si no envío decisiones a tiempo?<span class="icon">▼</span></div>
+                    <div class="accordion-body"><div class="accordion-content">Se repiten automáticamente las decisiones del periodo anterior. Esto puede perjudicar tu empresa si el mercado cambia, así que conviene decidir activamente.</div></div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">¿Cómo se evalúa mi desempeño?<span class="icon">▼</span></div>
+                    <div class="accordion-body"><div class="accordion-content">La métrica principal es el <strong>Valor de la Compañía</strong>, compuesto por varios factores ponderados: Resultados Económicos (40%), Valor de Marca (15%), Nivel de Equipamiento (13%), Nivel de Servicio y Actividades (12%), Participación de Mercado (10%) y Propuesta de Valor (10%).</div></div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">¿Necesito conocimientos previos de finanzas o marketing?<span class="icon">▼</span></div>
+                    <div class="accordion-body"><div class="accordion-content">No es indispensable. El simulador es intuitivo y el manual te guía en cada decisión. Aprenderás estos conceptos durante la simulación — ¡ese es el objetivo!</div></div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">¿Qué es el Crédito Extraordinario?<span class="icon">▼</span></div>
+                    <div class="accordion-body"><div class="accordion-content">Es un préstamo que el sistema activa automáticamente si tu empresa no tiene fondos para cubrir sus pagos. Su costo es un <strong>50% superior</strong> al de un préstamo normal. ¡Evítalo planificando bien tu financiación!</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== SLIDE 21: CIERRE ===================== -->
+    <div class="slide" id="slide21">
+        <div class="closing">
+            <h1>¡Gracias!</h1>
+            <p class="thanks-sub">Gracias por participar en FOCUS</p>
+            <div class="contact-box">
+                <div class="contact-line">📧 <a href="mailto:fidelizacion@simuladoresdenegocios.co">fidelizacion@simuladoresdenegocios.co</a></div>
+                <div class="contact-line"><svg class="wa-icon" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg> <a href="https://wa.me/573017903086">301 790 3086</a></div>
+            </div>
+            <div class="social-row">
+                <a class="social-icon" href="https://co.linkedin.com/company/simuladores-de-negocios-colombia-sas" target="_blank" rel="noopener" aria-label="LinkedIn">
+                    <svg viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M100.28 448H7.4V148.9h92.88zm-46.44-338.7C24.09 109.3 0 85.18 0 55.7A53.79 53.79 0 0 1 53.79 1.9c29.7 0 53.8 24.09 53.8 53.8 0 29.48-24.1 53.6-53.75 53.6zM447.9 448h-92.68V302.4c0-34.7-.7-79.4-48.4-79.4-48.4 0-55.8 37.8-55.8 76.9V448h-92.8V148.9h89.1v40.8h1.3c12.4-23.5 42.7-48.3 87.9-48.3 94 0 111.3 61.9 111.3 142.3V448z"/></svg>
+                </a>
+                <a class="social-icon" href="https://www.youtube.com/@SimuladoresdeNegocios/videos" target="_blank" rel="noopener" aria-label="YouTube">
+                    <svg viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><path d="M549.7 124.1c-6.3-23.7-24.8-42.3-48.3-48.6C458.8 64 288 64 288 64S117.2 64 74.6 75.5c-23.5 6.3-42 24.9-48.3 48.6-11.4 42.9-11.4 132.3-11.4 132.3s0 89.4 11.4 132.3c6.3 23.7 24.8 41.5 48.3 47.8C117.2 448 288 448 288 448s170.8 0 213.4-11.5c23.5-6.3 42-24.1 48.3-47.8 11.4-42.9 11.4-132.3 11.4-132.3s0-89.4-11.4-132.3zM232 335.1V177l143.7 79.1L232 335.1z"/></svg>
+                </a>
+                <a class="social-icon" href="https://simuladordenegocios.co/" target="_blank" rel="noopener" aria-label="Página web">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                </a>
+            </div>
+            <div class="sdn-img-box" id="sdn-box">
+                <img class="sdn-img" src="assets/logo-sdn.png" alt="Simuladores de Negocios Colombia"
+                     onerror="document.getElementById('sdn-box').style.display='none'; document.getElementById('sdn-text-fallback').style.display='flex';">
+            </div>
+            <div class="sdn-logo" id="sdn-text-fallback" style="display:none;">
+                <span class="sdn-mark">↻</span>
+                <span class="sdn-text">
+                    <span class="sdn-main">SIMULADORES</span>
+                    <span class="sdn-sub">de negocios</span>
+                    <span class="sdn-col">Colombia</span>
+                </span>
+            </div>
+            <div class="brand-pill">🏋️ FOCUS</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ===================== LIGHTBOX ===================== -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close" onclick="closeLightbox()">×</span>
+    <img id="lightboxImg" src="" alt="">
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<!-- ===================== NAV BAR ===================== -->
+<div class="nav-bar">
+    <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" disabled>◀ Anterior</button>
+    <div class="slide-counter" id="slideCounter">1 / 21</div>
+    <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Siguiente ▶</button>
+</div>
+
+<script>
+    let currentSlide = 1;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+
+    function startPresentation() {
+        document.getElementById('introOverlay').classList.add('hidden');
+        updateSlide();
+    }
+
+    function changeSlide(direction) {
+        const newSlide = currentSlide + direction;
+        if (newSlide >= 1 && newSlide <= totalSlides) {
+            currentSlide = newSlide;
+            updateSlide();
+        }
+    }
+
+    function updateSlide() {
+        slides.forEach(function(s) { s.classList.remove('active'); });
+        slides[currentSlide - 1].classList.add('active');
+
+        document.getElementById('prevBtn').disabled = currentSlide === 1;
+        document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+        document.getElementById('nextBtn').innerHTML = currentSlide === totalSlides ? '✓ Finalizar' : 'Siguiente ▶';
+        document.getElementById('slideCounter').textContent = currentSlide + ' / ' + totalSlides;
+
+        const progress = (currentSlide / totalSlides) * 100;
+        document.getElementById('progressBar').style.width = progress + '%';
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleAccordion(header) { header.parentElement.classList.toggle('active'); }
+    function toggleFactor(header) { header.parentElement.classList.toggle('active'); }
+
+    // ===== PLANIFICACIÓN: pasos =====
+    function showPlanStep(btn, n) {
+        const box = btn.closest(".slide-content");
+        box.querySelectorAll(".plan-step").forEach(function(b, i) { b.classList.toggle("active", i === n - 1); });
+        box.querySelectorAll(".plan-panel").forEach(function(p) { p.classList.toggle("active", p.dataset.step == n); });
+    }
+
+    // ===== LIGHTBOX =====
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxCaption = document.getElementById('lightboxCaption');
+    function openLightbox(src, caption) {
+        lightboxImg.src = src;
+        lightboxCaption.textContent = caption || '';
+        lightbox.classList.add('active');
+    }
+    function closeLightbox() { lightbox.classList.remove('active'); }
+
+    document.addEventListener('keydown', function(e) {
+        if (lightbox.classList.contains('active')) { if (e.key === 'Escape') closeLightbox(); return; }
+        if (document.getElementById('introOverlay').classList.contains('hidden') === false) return;
+        if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
+        else if (e.key === 'ArrowLeft') { changeSlide(-1); }
+    });
+
+    let touchStartX = 0;
+    document.addEventListener('touchstart', function(e) { touchStartX = e.changedTouches[0].screenX; });
+    document.addEventListener('touchend', function(e) {
+        if (lightbox.classList.contains('active')) return;
+        const diff = touchStartX - e.changedTouches[0].screenX;
+        if (Math.abs(diff) > 50) { changeSlide(diff > 0 ? 1 : -1); }
+    });
+</script>
+
+</body>
+</html>
